@@ -1,0 +1,4 @@
+---
+import { business } from '../data/business';
+---
+<footer class="site-footer"><div class="footer-lead"><span>ERZURUM’DAN İSTANBUL’A</span><h2>Bir sofradan fazlası.</h2><a href={business.whatsapp}>Masanızı ayırtın ↗</a></div><div class="footer-grid"><div><strong>Aras Cağ Kebap</strong><p>Gerçek Erzurum cağ kebabının İstanbul’daki temsilcisi.</p></div><div><small>İLETİŞİM</small><a href={business.phoneHref}>{business.phone}</a><a href={'mailto:'+business.email}>{business.email}</a></div><div><small>KONUM</small><a href={business.maps} target="_blank">{business.address}</a></div><div><small>TAKİP EDİN</small><a href={business.instagram} target="_blank">Instagram</a><a href={business.youtube} target="_blank">YouTube</a></div></div><p class="copyright">© 2026 Aras Cağ Gastronomi Restoran İşletmeleri</p></footer>

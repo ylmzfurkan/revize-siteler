@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { menuItems } from '../data/business';
+const categories=[...new Set(menuItems.map(i=>i.category))];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout title="Menü | Aras Cağ Kebap"><section class="page-hero"><p class="eyebrow">ARAS CAĞ KEBAP</p><h1>Menümüz</h1><p>Erzurum’un köklü mutfağından, usta eliyle hazırlanan lezzetler.</p></section><section class="menu-list section">{categories.map((category,index)=><div class="menu-category"><div class="category-title"><span>{String(index+1).padStart(2,'0')}</span><h2>{category}</h2></div><div>{menuItems.filter(i=>i.category===category).map(item=><article class="menu-row"><img src={base + item.image} alt={item.name} loading="lazy"/><div><h3>{item.name}</h3><p>{item.description}</p></div><strong>{item.price}</strong></article>)}</div></div>)}</section></BaseLayout>

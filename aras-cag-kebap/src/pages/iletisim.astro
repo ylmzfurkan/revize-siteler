@@ -1,0 +1,5 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { business } from '../data/business';
+---
+<BaseLayout title="İletişim | Aras Cağ Kebap"><section class="page-hero"><p class="eyebrow">SOFRAMIZA DAVETLİSİNİZ</p><h1>İletişim</h1><p>Rezervasyon ve bilgi için bize ulaşın.</p></section><section class="contact-grid section"><div class="contact-card"><small>TELEFON & WHATSAPP</small><a href={business.phoneHref}>{business.phone}</a><a class="button gold" href={business.whatsapp}>WhatsApp’tan yazın ↗</a></div><div class="contact-card"><small>ADRES</small><h2>{business.address}</h2><a class="button outline" href={business.maps} target="_blank">Yol tarifi al ↗</a></div><div class="contact-card"><small>E-POSTA</small><a href={'mailto:'+business.email}>{business.email}</a><p>Çalışma saatleri için gelmeden önce telefonla bilgi almanızı öneririz.</p></div></section></BaseLayout>
