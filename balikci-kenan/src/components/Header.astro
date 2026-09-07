@@ -1,0 +1,86 @@
+---
+export interface NavItem { label: string; href: string; }
+export interface Props {
+  companyName: string;
+  navItems: NavItem[];
+  phone?: string | null;
+  phoneHref?: string | null;
+}
+const { companyName, navItems, phone, phoneHref } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#home" aria-label={`${companyName} — sayfanın başına dön`}>
+      <img
+        class="brand-logo"
+        src={`${base}/images/logo-mark.png`}
+        alt={`${companyName} logosu`}
+        width="539"
+        height="175"
+        fetchpriority="high"
+      />
+    </a>
+
+    <button class="menu-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" hidden>
+      <span>Menü</span>
+      <span class="menu-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+
+    <nav class="primary-nav" id="primary-nav" aria-label="Ana menü">
+      <ul>
+        {navItems.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+        {phoneHref && phone && (
+          <li class="nav-cta-item">
+            <a class="nav-cta" href={phoneHref}>{phone}<span aria-hidden="true">↗</span></a>
+          </li>
+        )}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('primary-nav');
+
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  if (toggle && nav) {
+    toggle.hidden = false;
+    nav.classList.add('is-enhanced');
+
+    const close = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+    };
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+    });
+
+    nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        close();
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !nav.contains(event.target) && !toggle.contains(event.target)) close();
+    });
+
+    matchMedia('(min-width: 861px)').addEventListener('change', close);
+  }
+</script>

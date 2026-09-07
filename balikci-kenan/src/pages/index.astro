@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import FishArt from '../components/FishArt.astro';
+import { business } from '../data/business';
+
+const navItems = [
+  { label: 'Lezzetlerimiz', href: '#products' },
+  { label: 'Hikâyemiz', href: '#about' },
+  { label: 'Bize ulaşın', href: '#contact' },
+];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const productImages = ['balik-cesitleri', 'kalamar', 'kalkan', 'lufer', 'izgara', 'tatlilar'];
+const mapsHref = business.contact.address
+  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.contact.address)}`
+  : null;
+const telHref = business.contact.phone ? `tel:${business.contact.phone.replace(/\s+/g, '')}` : null;
+---
+<BaseLayout
+  title={`${business.companyName} — ${business.tagline}`}
+  description={business.tagline ?? business.companyName}
+>
+  <Header
+    slot="header"
+    companyName={business.companyName}
+    navItems={navItems}
+    phone={business.contact.phone}
+    phoneHref={telHref}
+  />
+
+  <Hero
+    title={business.companyName}
+    subtitle={business.tagline}
+    ctaHref={telHref}
+    address={business.contact.address}
+  />
+
+  <Section id="products" eyebrow="01 / Lezzetlerimiz" title="Denizin bereketi, sofranızda.">
+    <p slot="aside" class="section-aside">
+      {business.services.join(' & ')}<br />Seçenekleri keşfedin, detaylar için bizi arayın.
+    </p>
+
+    <ul class="product-grid">
+      {business.products.map((product, index) => (
+        <li class="product-card">
+          <div class="product-art">
+            <span class="product-number">0{index + 1}</span>
+            <img
+              class="product-photo"
+              src={`${base}/images/products/${productImages[index]}.jpg`}
+              alt={product}
+              width="1000"
+              height="1000"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="product-caption">
+            <h3>{product}</h3>
+            <span aria-hidden="true">✳</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="products-footnote">
+      <span>Bugünün seçeneklerini birlikte keşfedelim.</span>
+      {telHref && <a class="text-link" href={telHref}>Bilgi almak için arayın ↗</a>}
+    </div>
+  </Section>
+
+  <section class="story" id="about" aria-labelledby="about-title">
+    <div class="container story-grid">
+      <div class="story-art" aria-hidden="true">
+        <span>BİR İSTANBUL HİKÂYESİ</span>
+        <strong>1960<span>'dan<br />bugüne.</span></strong>
+        <FishArt />
+        <div class="story-art-bottom">KADIKÖY'DE BAŞLAYAN BİR SERÜVEN <span>↗</span></div>
+      </div>
+      <div class="story-copy">
+        <p class="eyebrow">02 / Hikâyemiz</p>
+        <h2 id="about-title">Bir olta.<br />Bir çocuk.<br /><em>Kocaman bir hikâye.</em></h2>
+        <p class="about-text">{business.aboutText}</p>
+        <a class="text-link" href="#contact">Hikâyemize siz de katılın ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <Section id="contact" eyebrow="03 / Bize ulaşın" title="Sofrada yeriniz var.">
+    <p slot="aside" class="section-aside">
+      Bir telefon kadar yakınız.<br />Sizi de bekleriz.
+    </p>
+
+    <div class="contact-grid">
+      <div class="contact-primary">
+        <span class="eyebrow">Bizi arayın</span>
+        {telHref && (
+          <a class="contact-phone" href={telHref}>{business.contact.phone} <span aria-hidden="true">↗</span></a>
+        )}
+        <div class="contact-services">
+          {business.services.map((service) => <span>{service}</span>)}
+        </div>
+      </div>
+      <div class="contact-details">
+        <div>
+          <p class="eyebrow">Adresimiz</p>
+          <p>{business.contact.address}</p>
+          {mapsHref && (
+            <a class="text-link" href={mapsHref} target="_blank" rel="noopener noreferrer">
+              Yol tarifi alın ↗<span class="sr-only"> (yeni sekmede açılır)</span>
+            </a>
+          )}
+        </div>
+        <div>
+          <p class="eyebrow">Çalışma saatleri</p>
+          <p>{business.workingHours}</p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Footer
+    slot="footer"
+    companyName={business.companyName}
+    contact={business.contact}
+    socialMedia={business.socialMedia}
+  />
+</BaseLayout>

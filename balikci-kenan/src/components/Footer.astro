@@ -1,0 +1,43 @@
+---
+interface Props {
+  companyName: string;
+  contact: { phone: string | null; email: string | null; address: string | null };
+  socialMedia: Record<string, string | null>;
+}
+const { companyName, contact, socialMedia } = Astro.props;
+const socialLinks = Object.entries(socialMedia).filter(([, url]) => Boolean(url));
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="footer-brand" href="#home" aria-label={`${companyName} — sayfanın başına dön`}>
+        <img
+          class="footer-logo"
+          src={`${base}/images/logo-light.png`}
+          alt={`${companyName} logosu`}
+          width="539"
+          height="175"
+          loading="lazy"
+        />
+        <span>Denize tutkuyla, yıllardır.</span>
+      </a>
+      <nav aria-label="Sosyal medya">
+        <ul>
+          {socialLinks.map(([name, url]) => (
+            <li>
+              <a href={url!} target="_blank" rel="noopener noreferrer">
+                {name}<span aria-hidden="true">↗</span><span class="sr-only"> (yeni sekmede açılır)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>© {new Date().getFullYear()} {companyName}. Tüm hakları saklıdır.</p>
+      {contact.address && <span>{contact.address}</span>}
+      <a href="#home">Başa dön ↑</a>
+    </div>
+  </div>
+</footer>
