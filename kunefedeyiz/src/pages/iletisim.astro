@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { business } from '../data/business';
+---
+<BaseLayout
+  title="İletişim — Künefedeyiz Beylikdüzü"
+  description="Künefedeyiz Beylikdüzü iletişim: 0530 446 31 36 · 0212 424 63 63 · Cumhuriyet Mah. Atatürk Bulvarı, Bizim Çarşı No:1/7, 34400 Beylikdüzü/İstanbul."
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">SOFRAMIZA DAVETLİSİNİZ</p>
+      <h1>Bir telefon<br /><em>kadar yakınız.</em></h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-card">
+          <small>TELEFON</small>
+          <a href={business.phoneGsmHref}>{business.phoneGsm}</a>
+          <a href={business.phoneLandlineHref}>{business.phoneLandline}</a>
+          <a class="button button--gold" href={business.whatsapp} target="_blank" rel="noopener">
+            WhatsApp’tan Yazın
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <small>ADRES</small>
+          <p>{business.addressShort}<br />{business.addressCity}</p>
+          <a class="button button--ghost" href={business.maps} target="_blank" rel="noopener">
+            Yol Tarifi Al
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <small>E-POSTA</small>
+          <a href={`mailto:${business.email}`}>{business.email}</a>
+          <p class="note">
+            Sipariş için {business.orderHours} arası arayabilirsiniz.
+            Ziyaret öncesi salon saatlerini telefonla teyit etmenizi öneririz.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PAKET SERVİS BÖLGELERİ</p>
+          <h2>Beylikdüzü ve <em>çevresine.</em></h2>
+          <p class="lede">
+            {business.serviceAreas.join(', ')} ilçeleri için bizi arayarak künefe
+            siparişi verebilirsiniz. Mekânımızda ücretsiz otopark, vale ve Wi-Fi
+            hizmeti bulunmaktadır.
+          </p>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe
+          src={business.mapsEmbed}
+          title="Künefedeyiz Beylikdüzü konumu — Google Haritalar"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

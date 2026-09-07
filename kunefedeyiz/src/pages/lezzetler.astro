@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { business, products } from '../data/business';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = (p: string) => base + p;
+---
+<BaseLayout
+  title="Lezzetlerimiz — Künefedeyiz Beylikdüzü"
+  description="Sade, kaymaklı, muzlu, dondurmalı ve fıstıklı künefe; cennet çamuru, antep kadayıfı, billuriye tatlısı, fıstıkzade ve hasır kadayıf. Beylikdüzü Künefedeyiz’in lezzetleri."
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">MENÜMÜZ</p>
+      <h1>Künefe, katmer,<br /><em>kadayıf ve dondurma.</em></h1>
+      <p class="lede">
+        Toplumun damak tadına uygun tatlı çeşitlerini titizlikle üretiyoruz.
+        Her lezzet günlük hazırlanır, sıcak ve taze servis edilir.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="dish-grid">
+        {products.map((p) => (
+          <article class="dish">
+            <img
+              src={path(p.image)}
+              alt={p.name.toLocaleLowerCase('tr-TR')}
+              loading="lazy" width="1000" height="666"
+            />
+            <h3>{p.name}</h3>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="container split">
+      <div>
+        <p class="eyebrow">FİYAT VE PORSİYON</p>
+        <h2>Güncel fiyat için <em>bizi arayın.</em></h2>
+        <p class="lede">
+          Fiyatlarımız ve porsiyon seçeneklerimiz dönemsel olarak değişebildiği
+          için sitemizde sabit fiyat yayımlamıyoruz. Sipariş ve bilgi için
+          {business.orderHours} arası bize ulaşabilirsiniz.
+        </p>
+        <div class="hero-actions">
+          <a class="button button--gold" href={business.phoneGsmHref}>{business.phoneGsm}</a>
+          <a class="button button--ghost" href={business.whatsapp} target="_blank" rel="noopener">WhatsApp’tan Yazın</a>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow">PAKET SERVİS</p>
+        <h3>Bir telefonla ayağınıza</h3>
+        <p class="lede">
+          {business.serviceAreas.join(', ')} bölgelerine paket servis
+          hizmeti veriyoruz. Siparişiniz kısa sürede kapınıza ulaşır.
+        </p>
+        <p class="note">
+          Mekânımızda ücretsiz otopark, vale ve Wi-Fi hizmeti bulunmaktadır.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

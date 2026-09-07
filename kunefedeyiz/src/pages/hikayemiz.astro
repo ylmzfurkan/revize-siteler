@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { amenities } from '../data/business';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = (p: string) => base + p;
+
+/** Malzeme tanımları /kunefeci-2/ sayfasından birebir alınmıştır. */
+const ingredients = [
+  { name: 'Kadayıf', text: 'İnce tel kadayıf, künefenin temel malzemesidir.' },
+  { name: 'Peynir', text: 'Genellikle Hatay’a özgü olan, eriyebilen peynir türleri kullanılır. Bu peynir künefenin lezzetini belirler.' },
+  { name: 'Tereyağı', text: 'Kadayıfın iyice kızarması için bol miktarda tereyağı kullanılır.' },
+  { name: 'Şerbet', text: 'Künefe fırından çıktıktan sonra üzerine dökülen şerbet, tatlıyı daha da lezzetli hale getirir.' },
+];
+---
+<BaseLayout
+  title="Hikâyemiz — Künefedeyiz Beylikdüzü"
+  description="Künefedeyiz, gıda sektöründe zengin ürün gamıyla faaliyet gösteren bir künefe salonudur. Erdal Şayir farkıyla Beylikdüzü’nde hizmet veriyoruz."
+  ogImage="/images/mekan/mekan-2.jpg"
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">BİZ KİMİZ</p>
+      <h1>Gönülleri kazanma<br /><em>yolunda.</em></h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div>
+        <p>
+          “KÜNEFEDEYİZ” gıda sektöründe zengin ürün gamı ve kreasyonlarıyla
+          faaliyet göstermektedir. Üretimden uygulamaya kadar olan süreçte,
+          deneyimli kadrosuyla estetiğe ve ergonomik ihtiyaçlara uygun üretim
+          gerçekleştirir. Her aşamada ekonomik çözümler sunar. Toplumun damak
+          tadına uygun tatlı çeşitleri imalatı yaparak gönülleri kazanma yolunda
+          büyük çalışmalara imza atmaktadır. Hizmet yelpazesini toplumun her
+          kesimine en hızlı ve en etkin şekilde ulaştıran ve İstanbul’da en iyi
+          künefe salonu olmaya gayret etmektedir.
+        </p>
+        <p>
+          Tatlı sektöründe faaliyet gösteren Künefedeyiz, ürün çeşitleriyle
+          hijyenik, damak tadına uygun, etkileyici ve beğeni toplayan ürün
+          çeşitlerini titizlikle üretir. Üretimden sunuma kadar müşterilerinin
+          memnuniyetini ön planda tutarak dostluk köprüleri kurmaya gayret eder.
+        </p>
+        <p>
+          “KÜNEFEDEYİZ”, sizin için her zaman en iyisini üretir, ve en iyi
+          sunumu yapar…
+        </p>
+      </div>
+      <div>
+        <img
+          src={path('/images/mekan/mekan-2.jpg')}
+          alt="Künefedeyiz’in Beylikdüzü’ndeki dükkân cephesi"
+          loading="lazy" width="1000" height="1333"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="container split">
+      <div>
+        <p class="eyebrow">USTA</p>
+        <h2>Künefeci <em>Erdal Usta.</em></h2>
+        <p class="lede">
+          Künefeci Erdal Şayir’in sizlere sunmuş olduğu muhteşem lezzeti tatmadan
+          başka yere gitmeyin. Her zaman künefe ve tatlı çeşitlerinin en iyisi
+          burada.
+        </p>
+      </div>
+      <div>
+        <ul class="check-list">
+          {amenities.map((a) => <li>{a}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">KÜNEFE NEDİR?</p>
+          <h2>İnce tel kadayıf,<br /><em>eriyen peynir, sıcak şerbet.</em></h2>
+        </div>
+      </div>
+      <div class="split">
+        <div>
+          <p>
+            Künefe, ince tel kadayıfın eritilmiş tereyağı ve peynirle
+            harmanlanarak fırında pişirilmesiyle yapılan bir tatlıdır. Fırında
+            pişen kadayıfın üzeri çıtır çıtır olurken, içindeki peynir erir ve bu
+            birleşimle ortaya eşsiz bir tat çıkar. Piştikten sonra üzerine
+            dökülen sıcak şerbetle birlikte servis edilen künefe, özellikle soğuk
+            kış günlerinde ya da özel günlerde tercih edilen bir tatlıdır.
+          </p>
+          <p>
+            Künefenin kökleri Osmanlı İmparatorluğu’na kadar uzanır. Özellikle
+            Hatay ve Gaziantep mutfağında kendine has bir yer edinmiştir.
+            Geleneksel tarifleri, bölgesel malzemeleri ve ustaların hünerleri
+            sayesinde her lokma, adeta bir sanat eseri gibi sunulmaktadır.
+          </p>
+        </div>
+        <div>
+          <ul class="check-list">
+            {ingredients.map((i) => (
+              <li><strong style="color: var(--cream)">{i.name}:</strong> {i.text}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

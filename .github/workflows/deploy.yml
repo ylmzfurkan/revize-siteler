@@ -42,11 +42,20 @@ jobs:
         working-directory: aras-cag-kebap
         run: npm run build
 
+      - name: Install dependencies (Künefedeyiz)
+        working-directory: kunefedeyiz
+        run: npm ci
+
+      - name: Build Künefedeyiz
+        working-directory: kunefedeyiz
+        run: npm run build
+
       - name: Prepare Pages artifact
         run: |
-          mkdir -p _site/balikci-kenan _site/aras-cag-kebap
+          mkdir -p _site/balikci-kenan _site/aras-cag-kebap _site/kunefedeyiz
           cp -R balikci-kenan/dist/. _site/balikci-kenan/
           cp -R aras-cag-kebap/dist/. _site/aras-cag-kebap/
+          cp -R kunefedeyiz/dist/. _site/kunefedeyiz/
           cat > _site/index.html <<'HTML'
           <!doctype html>
           <html lang="tr">
@@ -69,6 +78,7 @@ jobs:
                 <ul>
                   <li><a href="./balikci-kenan/">Balıkçı Kenan</a></li>
                   <li><a href="./aras-cag-kebap/">Aras Cağ Kebap</a></li>
+                  <li><a href="./kunefedeyiz/">Künefedeyiz</a></li>
                 </ul>
               </main>
             </body>

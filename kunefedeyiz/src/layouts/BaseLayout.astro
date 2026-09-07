@@ -1,0 +1,83 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { business } from '../data/business';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage = '/images/urunler/sade-kunefe.jpg' } = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const ogImageUrl = new URL(base + ogImage, Astro.site ?? Astro.url);
+
+/**
+ * JSON-LD yalnızca kaynakta doğrulanmış alanları içerir.
+ * openingHours bilinçli olarak yok: kaynak sitede gün bazlı saat yayımlanmamış
+ * (research/gaps.md #3), uydurma structured data yanıltıcı olur.
+ */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: business.name,
+  description,
+  url: canonical.href,
+  telephone: '+905304463136',
+  email: business.email,
+  servesCuisine: 'Türk tatlıları, künefe',
+  image: ogImageUrl.href,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.addressShort,
+    addressLocality: 'Beylikdüzü',
+    addressRegion: 'İstanbul',
+    postalCode: '34400',
+    addressCountry: 'TR',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: business.geo.lat, longitude: business.geo.lng },
+  sameAs: [business.youtube],
+  areaServed: business.serviceAreas,
+};
+---
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <meta name="theme-color" content="#0e0b08" />
+    <link rel="icon" href={base + '/images/marka/icon.jpg'} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:locale" content="tr_TR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,600&family=Manrope:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#icerik">İçeriğe geç</a>
+    <Header />
+    <main id="icerik">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

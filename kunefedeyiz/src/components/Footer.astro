@@ -1,0 +1,47 @@
+---
+import { business } from '../data/business';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = (p: string) => base + p;
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src={base + '/images/marka/logo.png'} alt="" width="52" height="52" />
+          <span class="brand-name">Künefedeyiz</span>
+        </div>
+        <p>Beylikdüzü’nde künefe, katmer, kadayıf ve dondurma. Erdal Şayir farkıyla.</p>
+      </div>
+
+      <div>
+        <small>İLETİŞİM</small>
+        <a href={business.phoneGsmHref}>{business.phoneGsm}</a>
+        <a href={business.phoneLandlineHref}>{business.phoneLandline}</a>
+        <a href={`mailto:${business.email}`}>{business.email}</a>
+      </div>
+
+      <div>
+        <small>KONUM</small>
+        <a href={business.maps} target="_blank" rel="noopener">
+          {business.addressShort}<br />{business.addressCity}
+        </a>
+      </div>
+
+      <div>
+        <small>SAYFALAR</small>
+        <a href={path('/lezzetler/')}>Lezzetler</a>
+        <a href={path('/hikayemiz/')}>Hikâyemiz</a>
+        <a href={path('/galeri/')}>Galeri</a>
+        <a href={path('/iletisim/')}>İletişim</a>
+        <a href={business.youtube} target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {new Date().getFullYear()} {business.name} · {business.legalNote}</span>
+      <span>Sipariş için {business.orderHours} arası arayabilirsiniz.</span>
+    </div>
+  </div>
+</footer>
