@@ -1,0 +1,89 @@
+---
+/**
+ * Figure — site genelindeki tek görsel bileşeni.
+ *
+ * webp + jpg yedeği, dar ekranlar için küçük varyant, isteğe bağlı büyütme ve
+ * konsept görselleri için zorunlu etiket. Konsept etiketi bilinçli olarak
+ * kapatılamaz: yapay zekâ ile üretilmiş görselin gerçek proje sanılmaması gerekir.
+ */
+import { url } from "../data/urls";
+
+export interface Props {
+  src: string;
+  small?: string | null;
+  fallback?: string | null;
+  alt: string;
+  width: number;
+  height: number;
+  /** CSS aspect-ratio; verilmezse görselin kendi oranı kullanılır. */
+  ratio?: string;
+  isConcept?: boolean;
+  title?: string;
+  caption?: string;
+  lightbox?: boolean;
+  sizes?: string;
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  hover?: boolean;
+}
+
+const {
+  src,
+  small = null,
+  fallback = null,
+  alt,
+  width,
+  height,
+  ratio,
+  isConcept = false,
+  title,
+  caption,
+  lightbox = false,
+  sizes = "(min-width: 64rem) 50vw, 100vw",
+  loading = "lazy",
+  fetchpriority,
+  class: className = "",
+  hover = true,
+} = Astro.props;
+
+const full = url(src);
+const srcset = small ? `${url(small)} 840w, ${full} ${width}w` : undefined;
+const style = ratio ? `aspect-ratio:${ratio}` : undefined;
+
+const Tag = lightbox ? "a" : "div";
+const linkProps = lightbox
+  ? {
+      href: full,
+      "data-lightbox": true,
+      "data-alt": alt,
+      "data-title": title ?? "",
+      "data-caption": caption ?? "",
+      "aria-label": `${title ?? alt} — görseli büyüt`,
+    }
+  : {};
+---
+
+<Tag class:list={["media", { "media--hover": hover }, className]} style={style} {...linkProps}>
+  <picture>
+    {fallback && <source type="image/webp" srcset={srcset ?? full} sizes={sizes} />}
+    <img
+      src={fallback ? url(fallback) : full}
+      srcset={!fallback ? srcset : undefined}
+      sizes={srcset ? sizes : undefined}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding="async"
+      fetchpriority={fetchpriority}
+    />
+  </picture>
+  {isConcept && <span class="concept-flag">Konsept görsel</span>}
+  <slot />
+</Tag>
+
+<style>
+  .media { display: block; }
+  .media picture { display: block; block-size: 100%; }
+</style>

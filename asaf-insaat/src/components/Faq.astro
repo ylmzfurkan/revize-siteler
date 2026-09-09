@@ -1,0 +1,115 @@
+---
+/**
+ * Faq — tek seferde tek soru açan akordiyon.
+ *
+ * `name` özniteliği sayesinde açma/kapama davranışı JavaScript'siz çalışır.
+ * Yumuşak açılış, destekleyen tarayıcılarda ::details-content + interpolate-size
+ * ile yapılır; desteklemeyen tarayıcıda içerik anında açılır — işlev aynıdır.
+ */
+import type { Faq } from "../data/content";
+
+export interface Props {
+  items: Faq[];
+  name?: string;
+}
+
+const { items, name = "faq" } = Astro.props;
+---
+
+<div class="faq">
+  {items.map((item, i) => (
+    <details class="faq__item" name={name} open={i === 0}>
+      <summary>
+        <span class="faq__q">{item.q}</span>
+        <span class="faq__icon" aria-hidden="true"></span>
+      </summary>
+      <div class="faq__body"><p>{item.a}</p></div>
+    </details>
+  ))}
+</div>
+
+<style>
+  /* Yükseklik geçişini açar (destekleyen tarayıcılarda). */
+  @supports (interpolate-size: allow-keywords) {
+    .faq { interpolate-size: allow-keywords; }
+  }
+
+  .faq { display: grid; border-block-start: 1px solid var(--line-soft); }
+
+  .faq__item { border-block-end: 1px solid var(--line-soft); }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block: var(--space-m);
+    cursor: pointer;
+    list-style: none;
+    transition: color var(--dur) var(--ease-out);
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary:hover { color: var(--gold-200); }
+
+  .faq__q {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  /* Artı işareti, açıkken eksiye döner. */
+  .faq__icon {
+    position: relative;
+    flex: none;
+    inline-size: 34px;
+    block-size: 34px;
+    border: 1px solid var(--line-gold);
+    border-radius: 999px;
+    transition: background var(--dur) var(--ease-out);
+  }
+  .faq__icon::before,
+  .faq__icon::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 12px;
+    block-size: 1.5px;
+    background: var(--gold-300);
+    translate: -50% -50%;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .faq__icon::after { transform: rotate(90deg); }
+  .faq__item[open] .faq__icon::after { transform: rotate(0deg); }
+  .faq__item[open] .faq__icon { background: color-mix(in oklab, var(--gold-300) 12%, transparent); }
+
+  .faq__body {
+    padding-block-end: var(--space-l);
+    max-inline-size: var(--measure);
+    color: var(--fg-muted);
+  }
+
+  @supports selector(::details-content) {
+    .faq__item::details-content {
+      block-size: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition:
+        block-size var(--dur) var(--ease-out),
+        content-visibility var(--dur) allow-discrete,
+        opacity var(--dur) var(--ease-out);
+    }
+    .faq__item[open]::details-content { block-size: auto; opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__item summary,
+    .faq__icon,
+    .faq__icon::before,
+    .faq__icon::after { transition: none; }
+    @supports selector(::details-content) {
+      .faq__item::details-content { transition: none; }
+    }
+  }
+</style>

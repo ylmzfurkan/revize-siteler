@@ -1,0 +1,5 @@
+/* ASAF — tek giriş noktası. Sıra önemlidir: jeton → temel → ilkel. */
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./base.css";
+@import "./ui.css";

@@ -1,0 +1,175 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ProcessTimeline from "../components/ProcessTimeline.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { url } from "../data/urls";
+import { visuals } from "../data/visuals";
+import { process, faq } from "../data/content";
+
+/* Görüşmeye gelirken elinizde olması işi hızlandıran bilgiler. */
+const prepare = [
+  {
+    title: "Arsa veya yapı bilgisi",
+    text: "Tapu, ada-parsel veya adres. Mevcut bir yapı söz konusuysa kaç yıllık olduğu ve bilinen sorunları.",
+  },
+  {
+    title: "İhtiyaç tarifi",
+    text: "Kaç oda, kaç kat, kimlerin kullanacağı. Kesin plan gerekmiyor; nasıl yaşamak istediğinizi anlatmanız yeterli.",
+  },
+  {
+    title: "Bütçe çerçevesi",
+    text: "Kesin rakam değil, çalışılabilir bir aralık. Bu bilgi olmadan hazırlanan teklif ikimizin de vaktini alır.",
+  },
+  {
+    title: "Zaman beklentisi",
+    text: "Ne zaman başlamak ve ne zaman kullanmak istediğiniz. Termin planı buna göre kurgulanır.",
+  },
+];
+
+const guarantees = [
+  { key: "Kapsam dışı iş", value: "Onaylanmadan uygulanmaz. Ek kalem gerekirse önce fiyatı ve süre etkisi paylaşılır." },
+  { key: "Ödeme", value: "Aşamaya bağlı plan. Ödeme, tamamlanan imalatı takip eder." },
+  { key: "İletişim", value: "Sürecin tek bir muhatabı olur; her soru için farklı kişiye yönlendirilmezsiniz." },
+  { key: "Kayıt", value: "Aşama fotoğrafları ve ilerleme bilgisi düzenli paylaşılır." },
+];
+
+const pageFaq = faq;
+---
+
+<BaseLayout
+  title="Süreç"
+  description="ASAF'ta bir proje nasıl ilerler: tanışmadan yerinde incelemeye, tasarımdan sözleşmeye, uygulamadan teslime altı adım."
+>
+  <PageHero
+    eyebrow="Çalışma süreci"
+    title="Fikirden"
+    accent="anahtar teslime"
+    lead="Altı adım, altı somut çıktı. Sürecin neresinde olduğunuz her zaman bellidir."
+    visual={{
+      src: visuals.architecture.src,
+      small: visuals.architecture.small,
+      alt: visuals.architecture.alt,
+      width: visuals.architecture.width,
+      height: visuals.architecture.height,
+      isConcept: visuals.architecture.isConcept,
+    }}
+  />
+
+  {/* --- Adımlar ------------------------------------------------------ */}
+  <section class="section">
+    <div class="shell shell--wide process">
+      <aside class="process__aside" data-reveal>
+        <p class="eyebrow">Altı adım</p>
+        <h2 class="process__title">Her adımın <span class="foil">bir çıktısı</span> var</h2>
+        <p class="prose">
+          Süreç boyunca elinizde somut bir belge, plan veya kayıt olur. "İş
+          ilerliyor" cümlesi yerine, ilerlemenin karşılığını görürsünüz.
+        </p>
+        <a class="btn btn--ghost" href={url("iletisim/")}>
+          İlk adımı atın <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+      </aside>
+
+      <div class="process__timeline">
+        <ProcessTimeline steps={process} />
+      </div>
+    </div>
+  </section>
+
+  {/* --- Hazırlık ------------------------------------------------------ */}
+  <section class="section on-light">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">İlk görüşme</p>
+          <h2 class="section-head__title">Elinizde bunlar olsun</h2>
+        </div>
+        <p class="prose">
+          Hiçbiri zorunlu değil. Ancak varsa ilk görüşme, genel konuşma olmaktan
+          çıkıp doğrudan planlamaya geçer.
+        </p>
+      </header>
+
+      <ul class="prep">
+        {prepare.map((item, i) => (
+          <li class="prep__item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <h3 class="prep__title">{item.title}</h3>
+            <p class="prep__text">{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* --- Taahhütler ----------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide split">
+      <div class="split__text" data-reveal>
+        <p class="eyebrow">Süreç kuralları</p>
+        <h2 class="split__title">Sürpriz <span class="foil">çıkmasın</span> diye</h2>
+        <p class="prose">
+          İnşaatta anlaşmazlıkların çoğu, baştan yazılmamış dört konudan çıkar.
+          Bu yüzden dördü de sözleşmede yer alır.
+        </p>
+      </div>
+      <dl class="spec split__spec" data-reveal style="--reveal-delay:100ms">
+        {guarantees.map((row) => (
+          <div class="spec__row">
+            <dt class="spec__key">{row.key}</dt>
+            <dd class="spec__val">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  {/* --- SSS ------------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--narrow">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Sık sorulanlar</p>
+        <h2 class="section-head__title">Süreç hakkında <span class="foil">merak edilenler</span></h2>
+      </header>
+      <div data-reveal>
+        <Faq items={pageFaq} name="surec-faq" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="İlk adım"
+    accent="bir görüşme"
+    text="Projeyi anlatın; yerinde görüp nasıl ilerleyeceğimizi somut biçimde paylaşalım."
+  />
+</BaseLayout>
+
+<style>
+  .process { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 62rem) {
+    .process { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--space-3xl); }
+    .process__aside { position: sticky; top: calc(var(--header-h) + var(--space-l)); }
+  }
+  .process__aside { display: grid; gap: var(--space-m); justify-items: start; }
+  .process__title { font-size: var(--step-4); max-inline-size: 14ch; }
+
+  .prep { display: grid; gap: var(--space-l); }
+  @media (min-width: 44rem) { .prep { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 74rem) { .prep { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .prep__item {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-m);
+    border-block-start: 1px solid var(--line-gold);
+  }
+  .prep__title { font-size: var(--step-1); }
+  .prep__text { color: var(--fg-muted); font-size: var(--step--1); }
+
+  .split { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 62rem) {
+    .split { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-3xl); }
+  }
+  .split__text { display: grid; gap: var(--space-m); }
+  .split__title { font-size: var(--step-4); }
+</style>

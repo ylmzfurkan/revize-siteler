@@ -1,0 +1,391 @@
+---
+/**
+ * CinematicHero — tam ekran açılış.
+ *
+ * Üç sahne (inşaat / otomotiv / detay) arasında geçiş yapar. Sahneler kendi
+ * kendine ilerler; imleç üzerine geldiğinde, odak alındığında veya sekme arka
+ * plana düştüğünde durur. prefers-reduced-motion açıkken otomatik geçiş hiç
+ * çalışmaz ve sahneler yalnızca elle değiştirilir.
+ */
+import BrandMark from "./BrandMark.astro";
+import Figure from "./Figure.astro";
+import { url } from "../data/urls";
+import { scenes } from "../data/content";
+import { visuals } from "../data/visuals";
+---
+
+<section class="hero" data-hero aria-roledescription="carousel" aria-label="ASAF açılış sahneleri">
+  <div class="hero__stage" aria-hidden="true">
+    {scenes.map((scene, i) => {
+      const v = visuals[scene.visual];
+      return (
+        <div class:list={["hero__layer", { "is-active": i === 0 }]} data-scene-layer={scene.id}>
+          <Figure
+            src={v.src}
+            small={v.small}
+            alt=""
+            width={v.width}
+            height={v.height}
+            hover={false}
+            sizes="100vw"
+            loading={i === 0 ? "eager" : "lazy"}
+            fetchpriority={i === 0 ? "high" : undefined}
+            class="hero__media"
+          />
+        </div>
+      );
+    })}
+    <div class="hero__scrim"></div>
+    <div class="hero__grain"></div>
+  </div>
+
+  <div class="hero__inner shell shell--wide">
+    <div class="hero__content">
+      {scenes.map((scene, i) => {
+        /* Sayfada tek bir h1 bulunmalı: ilk sahne başlığı h1, diğerleri h2. */
+        const Heading = i === 0 ? "h1" : "h2";
+        return (
+        <article
+          class:list={["hero__panel", { "is-active": i === 0 }]}
+          data-scene-panel={scene.id}
+          role="tabpanel"
+          id={`hero-panel-${scene.id}`}
+          aria-labelledby={`hero-tab-${scene.id}`}
+          hidden={i !== 0}
+        >
+          <p class="eyebrow">{scene.kicker}</p>
+          <Heading class="hero__title">
+            {scene.title}<br /><span class="foil">{scene.titleAccent}</span>
+          </Heading>
+          <p class="hero__text">{scene.text}</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href={url(scene.cta.path)}>
+              {scene.cta.label} <span class="btn__arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="btn btn--ghost" href={url("iletisim/")}>
+              Teklif alın <span class="btn__arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
+        );
+      })}
+    </div>
+
+    <div class="hero__emblem">
+      <BrandMark size="clamp(5rem, 15vw, 11rem)" duration="9s" halo />
+    </div>
+  </div>
+
+  <div class="hero__foot shell shell--wide">
+    <div class="hero__tabs" role="tablist" aria-label="Sahne seçimi">
+      {scenes.map((scene, i) => (
+        <button
+          type="button"
+          class:list={["hero__tab", { "is-active": i === 0 }]}
+          role="tab"
+          id={`hero-tab-${scene.id}`}
+          aria-controls={`hero-panel-${scene.id}`}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? 0 : -1}
+          data-scene-tab={scene.id}
+        >
+          <span class="hero__tab-rail"><span class="hero__tab-fill"></span></span>
+          <span class="hero__tab-label">{scene.kicker}</span>
+        </button>
+      ))}
+    </div>
+    <a class="hero__scroll" href="#giris">
+      <span>Aşağı kaydırın</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-block-size: min(100svh, 980px);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding-block: calc(var(--header-h) + var(--space-2xl)) var(--space-l);
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--ink-000);
+  }
+
+  /* --- Arka plan katmanları --------------------------------------------- */
+
+  .hero__stage { position: absolute; inset: 0; z-index: -2; }
+
+  .hero__layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1100ms var(--ease-in-out);
+  }
+  .hero__layer.is-active { opacity: 1; }
+
+  .hero__layer :global(.hero__media) {
+    block-size: 100%;
+    border-radius: 0;
+  }
+  .hero__layer :global(.hero__media img) {
+    block-size: 100%;
+    object-fit: cover;
+    /* Yavaş yakınlaşma: sahne canlı dursun ama hareket dikkat dağıtmasın. */
+    transform: scale(1.06);
+    transition: transform 9000ms linear;
+  }
+  .hero__layer.is-active :global(.hero__media img) { transform: scale(1.16); }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, color-mix(in oklab, var(--ink-000) 78%, transparent) 0%, transparent 34%),
+      linear-gradient(90deg, color-mix(in oklab, var(--ink-000) 88%, transparent) 0%, color-mix(in oklab, var(--ink-000) 34%, transparent) 58%, transparent 100%),
+      linear-gradient(0deg, var(--ink-000) 2%, color-mix(in oklab, var(--ink-000) 60%, transparent) 26%, transparent 62%);
+  }
+
+  /* İnce film tanesi: geniş gradyanlardaki bantlaşmayı kırar. */
+  .hero__grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  }
+
+  /* --- İçerik ------------------------------------------------------------ */
+
+  .hero__inner {
+    display: grid;
+    align-items: center;
+    gap: var(--space-xl);
+    align-self: center;
+  }
+  @media (min-width: 62rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+      gap: var(--space-3xl);
+    }
+  }
+
+  .hero__content { position: relative; display: grid; }
+  /* Paneller üst üste yerleşir: geçişte yükseklik zıplaması olmaz. */
+  .hero__panel { grid-area: 1 / 1; display: grid; gap: var(--space-m); justify-items: start; }
+  .hero__panel[hidden] { display: none; }
+  .hero__panel.is-active { animation: panel-in 720ms var(--ease-out) both; }
+
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .hero__title {
+    font-size: var(--step-7);
+    font-weight: 500;
+    line-height: 0.98;
+    max-inline-size: 15ch;
+  }
+  .hero__text {
+    max-inline-size: 46ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--paper-dim);
+  }
+
+  .hero__emblem { display: none; justify-self: center; }
+  @media (min-width: 62rem) { .hero__emblem { display: block; } }
+
+  /* --- Alt şerit ---------------------------------------------------------- */
+
+  .hero__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block-start: var(--space-xl);
+  }
+
+  .hero__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 3vw, 2rem);
+  }
+  .hero__tab {
+    display: grid;
+    gap: var(--space-2xs);
+    min-inline-size: clamp(72px, 22vw, 150px);
+    padding-block: var(--space-2xs);
+    text-align: start;
+  }
+  .hero__tab-rail {
+    display: block;
+    block-size: 2px;
+    background: color-mix(in oklab, var(--paper) 22%, transparent);
+    overflow: hidden;
+  }
+  .hero__tab-fill {
+    display: block;
+    block-size: 100%;
+    inline-size: 0%;
+    background: var(--gold-300);
+  }
+  .hero__tab.is-active .hero__tab-fill {
+    animation: tab-fill var(--hero-interval, 7s) linear forwards;
+  }
+  /* Duraklatıldığında ilerleme çizgisi de durur. */
+  .hero.is-paused .hero__tab.is-active .hero__tab-fill { animation-play-state: paused; }
+  .hero.is-manual .hero__tab.is-active .hero__tab-fill { inline-size: 100%; animation: none; }
+
+  @keyframes tab-fill {
+    from { inline-size: 0%; }
+    to { inline-size: 100%; }
+  }
+
+  .hero__tab-label {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .hero__tab.is-active .hero__tab-label { color: var(--gold-200); }
+  .hero__tab:hover .hero__tab-label { color: var(--paper); }
+
+  .hero__scroll {
+    display: none;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--step--2);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-dim);
+  }
+  @media (min-width: 48rem) { .hero__scroll { display: flex; } }
+  .hero__scroll-line {
+    inline-size: 62px;
+    block-size: 1px;
+    background: linear-gradient(90deg, var(--muted-dim), var(--gold-300));
+    transform-origin: left;
+    animation: scroll-hint 2.6s var(--ease-in-out) infinite;
+  }
+  @keyframes scroll-hint {
+    0%, 100% { transform: scaleX(0.55); opacity: 0.5; }
+    50% { transform: scaleX(1); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__layer { transition: none; }
+    .hero__layer :global(.hero__media img) { transform: none; transition: none; }
+    .hero__panel.is-active { animation: none; }
+    .hero__tab.is-active .hero__tab-fill { animation: none; inline-size: 100%; }
+    .hero__scroll-line { animation: none; }
+  }
+</style>
+
+<script>
+  const INTERVAL = 7000;
+
+  function initHero() {
+    const hero = document.querySelector<HTMLElement>("[data-hero]");
+    if (!hero || hero.dataset.ready === "1") return;
+    hero.dataset.ready = "1";
+
+    const tabs = [...hero.querySelectorAll<HTMLButtonElement>("[data-scene-tab]")];
+    const panels = [...hero.querySelectorAll<HTMLElement>("[data-scene-panel]")];
+    const layers = [...hero.querySelectorAll<HTMLElement>("[data-scene-layer]")];
+    if (tabs.length < 2) return;
+
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let index = 0;
+    let timer: number | undefined;
+
+    hero.style.setProperty("--hero-interval", `${INTERVAL}ms`);
+
+    const show = (next: number) => {
+      index = (next + tabs.length) % tabs.length;
+      tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.classList.toggle("is-active", active);
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+        // Dolum çizgisi baştan başlasın diye animasyon yeniden tetiklenir.
+        if (active) {
+          const fill = tab.querySelector<HTMLElement>(".hero__tab-fill");
+          if (fill) {
+            fill.style.animation = "none";
+            void fill.offsetWidth;
+            fill.style.animation = "";
+          }
+        }
+      });
+      panels.forEach((panel, i) => {
+        panel.hidden = i !== index;
+        panel.classList.toggle("is-active", i === index);
+      });
+      layers.forEach((layer, i) => layer.classList.toggle("is-active", i === index));
+    };
+
+    const stop = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = undefined;
+      }
+    };
+    const start = () => {
+      stop();
+      if (reduced.matches || hero.classList.contains("is-manual")) return;
+      timer = window.setInterval(() => show(index + 1), INTERVAL);
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => {
+        // Kullanıcı seçim yaptıysa otomatik geçiş kalıcı olarak durur.
+        hero.classList.add("is-manual");
+        stop();
+        show(i);
+      });
+      tab.addEventListener("keydown", (e: KeyboardEvent) => {
+        const delta = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!delta) return;
+        e.preventDefault();
+        hero.classList.add("is-manual");
+        stop();
+        show(index + delta);
+        tabs[index].focus();
+      });
+    });
+
+    const pause = () => { hero.classList.add("is-paused"); stop(); };
+    const resume = () => { hero.classList.remove("is-paused"); start(); };
+
+    hero.addEventListener("pointerenter", pause);
+    hero.addEventListener("pointerleave", resume);
+    hero.addEventListener("focusin", pause);
+    hero.addEventListener("focusout", resume);
+
+    const onVisibility = () => (document.hidden ? pause() : resume());
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // Sayfadan ayrılırken zamanlayıcı kapatılır (görünüm geçişleri açık).
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        stop();
+        document.removeEventListener("visibilitychange", onVisibility);
+      },
+      { once: true },
+    );
+
+    show(0);
+    start();
+  }
+
+  // İlk astro:page-load bu modülden önce gönderildiği için doğrudan çağrılır.
+  initHero();
+  document.addEventListener("astro:page-load", initHero);
+</script>

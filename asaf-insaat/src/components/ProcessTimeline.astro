@@ -1,0 +1,140 @@
+---
+/**
+ * ProcessTimeline — numaralı süreç akışı.
+ * Soldaki altın çizgi, destekleyen tarayıcılarda kaydırmaya bağlı olarak dolar
+ * (scroll-driven animation). Desteklenmiyorsa çizgi sabit görünür.
+ */
+import type { Step } from "../data/content";
+
+export interface Props {
+  steps: Step[];
+  compact?: boolean;
+}
+
+const { steps, compact = false } = Astro.props;
+---
+
+<ol class:list={["timeline", { "timeline--compact": compact }]}>
+  {steps.map((step) => (
+    <li class="timeline__item" data-reveal>
+      <div class="timeline__marker" aria-hidden="true">
+        <span class="timeline__dot"></span>
+      </div>
+      <div class="timeline__body">
+        <p class="timeline__index">Adım {step.index}</p>
+        <h3 class="timeline__title">{step.title}</h3>
+        <p class="timeline__text">{step.text}</p>
+        {!compact && (
+          <ul class="timeline__outputs">
+            {step.outputs.map((out) => (
+              <li class="tag tag--muted">{out}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  /* Dikey ray: tüm listeyi kat eden zemin çizgisi. */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    inset-block: 0.6rem;
+    inset-inline-start: 11px;
+    inline-size: 1px;
+    background: var(--line);
+  }
+  @media (min-width: 52rem) {
+    .timeline::before { inset-inline-start: 13px; }
+  }
+
+  /* Kaydırdıkça dolan altın çizgi. */
+  .timeline::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 0.6rem;
+    inset-inline-start: 11px;
+    inline-size: 1px;
+    block-size: 100%;
+    transform-origin: 50% 0;
+    background: linear-gradient(180deg, var(--gold-300), var(--gold-700));
+  }
+  @media (min-width: 52rem) {
+    .timeline::after { inset-inline-start: 13px; }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .timeline::after {
+        scale: 1 0;
+        animation: rail-fill linear both;
+        animation-timeline: view();
+        animation-range: entry 30% cover 72%;
+      }
+      @keyframes rail-fill {
+        from { scale: 1 0; }
+        to { scale: 1 1; }
+      }
+    }
+  }
+
+  .timeline__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-m);
+    align-items: start;
+  }
+
+  .timeline__marker {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: 23px;
+    block-size: 23px;
+    margin-block-start: 0.35rem;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line-gold);
+  }
+  @media (min-width: 52rem) {
+    .timeline__marker { inline-size: 27px; block-size: 27px; }
+  }
+  .timeline__dot {
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: 50%;
+    background: var(--gold-300);
+  }
+
+  .timeline__body { display: grid; gap: var(--space-2xs); }
+
+  .timeline__index {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .timeline__title { font-size: var(--step-2); }
+  .timeline__text { color: var(--fg-muted); max-inline-size: var(--measure); }
+
+  .timeline__outputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-2xs);
+  }
+
+  @media (min-width: 62rem) {
+    .timeline--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-l) var(--space-2xl); }
+  }
+</style>

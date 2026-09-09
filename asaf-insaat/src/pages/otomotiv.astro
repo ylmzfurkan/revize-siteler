@@ -1,0 +1,194 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import Figure from "../components/Figure.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { url } from "../data/urls";
+import { visuals } from "../data/visuals";
+import { automotiveServices, automotiveScopePending } from "../data/content";
+
+/* İnşaat ile otomotivin kesiştiği somut noktalar. */
+const crossovers = [
+  {
+    index: "01",
+    title: "Şarj altyapısı yapıyla birlikte",
+    text: "Elektrik altyapısı projelendirilirken şarj noktasının da hesaba katılması, sonradan yapılan eklemelere göre çok daha temiz ve güvenli bir sonuç verir.",
+  },
+  {
+    index: "02",
+    title: "Garaj ve otopark kurgusu",
+    text: "Araç ölçüleri, dönüş yarıçapı ve kapı açılımı; garajın mimari kurgusuna baştan girdiğinde kullanım rahat olur.",
+  },
+  {
+    index: "03",
+    title: "Şantiye aracı düzeni",
+    text: "Şantiyede kullanılan araçların planlanması, tedarik ve bakım düzeni işin akışını doğrudan etkiler.",
+  },
+];
+---
+
+<BaseLayout
+  title="Otomotiv"
+  description="ASAF'ın otomotiv tarafı: araç tedarik ve danışmanlık, filo çözümleri, elektrikli araca geçiş ve yapıyla bütünleşik şarj altyapısı."
+>
+  <PageHero
+    eyebrow="Otomotiv"
+    title="Yapının"
+    accent="hareket tarafı"
+    lead="Otomotiv, ASAF'ta ayrı bir iş kolu değil; yapının kullanım senaryosunun parçası olarak planlanıyor."
+    visual={{
+      src: visuals.automotive.src,
+      small: visuals.automotive.small,
+      alt: visuals.automotive.alt,
+      width: visuals.automotive.width,
+      height: visuals.automotive.height,
+      isConcept: visuals.automotive.isConcept,
+    }}
+  />
+
+  {/* --- Giriş -------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide intro">
+      <div data-reveal>
+        <p class="eyebrow">Neden aynı çatı altında</p>
+        <h2 class="intro__title">
+          Bir yapıya girip çıkma biçiminiz de <span class="foil">tasarımın parçası</span>.
+        </h2>
+      </div>
+      <div class="prose" data-reveal style="--reveal-delay:120ms">
+        <p>
+          Firmanın unvanında hem otomotiv hem inşaat var ve bu tesadüf değil. Bir
+          evin garajı, şarj noktası ve giriş kurgusu; yapı bittikten sonra
+          çözülmesi gereken ayrıntılar olmaktan çıkıp tasarımın başında ele
+          alındığında sonuç belirgin biçimde iyileşiyor.
+        </p>
+        <p>
+          Bu sayfadaki başlıklar, otomotiv tarafında yürütülebilecek çalışma
+          alanlarını gösteriyor.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* --- Kesişim ------------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Kesişim noktaları</p>
+          <h2 class="section-head__title">İnşaat ile otomotiv <span class="foil">nerede buluşuyor</span></h2>
+        </div>
+        <p class="prose">
+          Üç somut nokta. Hepsi, yapının projelendirme aşamasında karar
+          verildiğinde daha ucuz ve daha düzgün çözülüyor.
+        </p>
+      </header>
+
+      <ul class="card-grid">
+        {crossovers.map((item, i) => (
+          <li class="card" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <span class="card__index">{item.index}</span>
+            <h3 class="card__title">{item.title}</h3>
+            <p class="card__text">{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* --- Hizmet alanları ------------------------------------------------ */}
+  <section class="section">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Çalışma alanları</p>
+          <h2 class="section-head__title">Otomotiv tarafında <span class="foil">başlıklar</span></h2>
+        </div>
+        <p class="prose">
+          Aşağıdaki dört başlık, otomotiv tarafında sunulabilecek hizmetlerin
+          çerçevesini gösteriyor.
+        </p>
+      </header>
+
+      {automotiveScopePending && (
+        <p class="pending" data-reveal>
+          <strong>Onay bekleyen bölüm:</strong>
+          Bu başlıkların hangilerinin fiilen sunulduğu firma tarafından henüz
+          teyit edilmedi. Kapsam netleştiğinde liste güncellenecek; uydurma
+          hizmet eklenmedi.
+        </p>
+      )}
+
+      <div class="services-wrap">
+        <ServiceGrid items={automotiveServices} />
+      </div>
+    </div>
+  </section>
+
+  {/* --- Görsel bant ----------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide">
+      <Figure
+        src="images/concepts/automotive.webp"
+        small="images/concepts/automotive-840.webp"
+        alt={visuals.automotive.alt}
+        width={visuals.automotive.width}
+        height={visuals.automotive.height}
+        isConcept
+        title="Otomotiv konsept sahnesi"
+        caption="Mimari bir mekânda araç sunumu — yapay zekâ ile üretilmiş konsept görsel."
+        lightbox
+        ratio="21 / 9"
+        sizes="94vw"
+        class="band"
+      />
+    </div>
+  </section>
+
+  {/* --- Elektrikli araç ------------------------------------------------- */}
+  <section class="section on-light">
+    <div class="shell shell--narrow ev" data-reveal>
+      <p class="eyebrow">Elektrikli araç geçişi</p>
+      <h2 class="ev__title">Menzil değil, günlük kullanım belirleyici</h2>
+      <div class="prose">
+        <p>
+          Elektrikli araca geçişte en sık yapılan hata, kararı yalnızca menzil
+          rakamına bakarak vermek. Belirleyici olan günlük kullanım profili:
+          günde kaç kilometre yapıldığı, aracın gece nerede durduğu ve evde şarj
+          imkânının olup olmadığı.
+        </p>
+        <p>
+          Evde şarj mümkünse, gerçek kullanım deneyimi menzil tablolarının
+          gösterdiğinden çok daha rahat oluyor. Bu yüzden geçiş kararını
+          <strong> yapının elektrik altyapısıyla birlikte </strong>
+          değerlendirmek gerekiyor.
+        </p>
+      </div>
+      <a class="btn btn--ghost" href={url("iletisim/")}>
+        Durumunuzu konuşalım <span class="btn__arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Otomotiv tarafında"
+    accent="ne gerekiyor?"
+    text="Filo, şarj altyapısı veya araç tedariki — ihtiyacınızı anlatın, kapsamı birlikte netleştirelim."
+  />
+</BaseLayout>
+
+<style>
+  .intro { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 62rem) {
+    .intro { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-3xl); }
+  }
+  .intro__title { font-size: var(--step-4); max-inline-size: 18ch; }
+
+  .services-wrap { margin-block-start: var(--space-l); }
+
+  .band { inline-size: 100%; }
+
+  .ev { display: grid; gap: var(--space-m); justify-items: start; }
+  .ev__title { font-size: var(--step-4); max-inline-size: 20ch; }
+</style>

@@ -1,0 +1,296 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import Figure from "../components/Figure.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { url } from "../data/urls";
+import { visuals } from "../data/visuals";
+import { projects } from "../data/business";
+import { constructionServices, faq } from "../data/content";
+
+const villa = projects[0];
+
+/* Yapım aşamaları: sözleşmede kalem karşılığı olan somut evreler. */
+const phases = [
+  {
+    index: "01",
+    title: "Hazırlık ve zemin",
+    text: "Saha temizliği, kazı, zemin hazırlığı ve kot kontrolü. Yapının oturacağı zeminin davranışı, sonraki her kararı belirler.",
+  },
+  {
+    index: "02",
+    title: "Temel ve betonarme",
+    text: "Donatı yerleşimi, kalıp düzeni ve döküm planı. Beton dökümü hava koşulu ve priz süresi gözetilerek programlanır.",
+  },
+  {
+    index: "03",
+    title: "Duvar ve çatı",
+    text: "Kaba yapının kapanması. Yapı bu aşamada hava koşullarına karşı korunaklı hâle gelir ve iç imalatlar başlayabilir.",
+  },
+  {
+    index: "04",
+    title: "Tesisat ve altyapı",
+    text: "Elektrik, mekanik ve su tesisatının yapı içine yerleşmesi. Elektrikli araç şarjı gibi ihtiyaçlar da bu aşamada planlanır.",
+  },
+  {
+    index: "05",
+    title: "Cephe ve yalıtım",
+    text: "Isı ve su yalıtımı, kaplama ve doğrama entegrasyonu. Yapının ömrünü en çok etkileyen katman burada oluşur.",
+  },
+  {
+    index: "06",
+    title: "İnce iş ve teslim",
+    text: "Yüzey kaplamaları, ıslak hacimler, aydınlatma ve son kontroller. Eksik listesi birlikte gezilerek çıkarılır ve kapatılır.",
+  },
+];
+
+const qualityRows = [
+  { key: "Kapsam", value: "İmalat kalemleri sözleşmede tek tek yazılır; kapsam dışı iş, onaylanmadan uygulanmaz." },
+  { key: "Malzeme", value: "Hangi imalatta hangi malzeme sınıfının kullanılacağı önceden belirlenir. Muadil değişiklik habersiz yapılmaz." },
+  { key: "Termin", value: "İş programı aşama bazında verilir; gecikme riski oluştuğunda beklenmeden bildirilir." },
+  { key: "Kayıt", value: "Her aşama fotoğraflanır. Kapanan imalatın altında ne olduğu sonradan da görülebilir." },
+  { key: "İş güvenliği", value: "Sahada koruyucu ekipman kullanımı ve düzen, işin hızından önce gelen standarttır." },
+];
+
+const pageFaq = [faq[0], faq[1], faq[3], faq[4]];
+---
+
+<BaseLayout
+  title="İnşaat"
+  description="Villa ve müstakil konut üretimi, betonarme ve kaba yapı, cephe, ince iş, tadilat ve şantiye yönetimi. Temelden anahtar teslimine tek sorumluluk zinciri."
+>
+  <PageHero
+    eyebrow="İnşaat"
+    title="Temelden"
+    accent="anahtar teslimine"
+    lead="Vaziyet planından ince işe kadar bütün imalat aşamaları tek sorumluluk zinciri içinde yürütülür."
+    visual={{
+      src: visuals.architecture.src,
+      small: visuals.architecture.small,
+      alt: visuals.architecture.alt,
+      width: visuals.architecture.width,
+      height: visuals.architecture.height,
+      isConcept: visuals.architecture.isConcept,
+    }}
+  />
+
+  {/* --- Giriş ------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide split">
+      <div class="split__text" data-reveal>
+        <p class="eyebrow">Yaklaşım</p>
+        <h2 class="split__title">
+          İyi yapı, <span class="foil">iyi karar</span> zincirinin sonucudur.
+        </h2>
+        <div class="prose">
+          <p>
+            Bir yapıda görünen her yüzeyin altında, görünmeyen onlarca karar
+            vardır: zeminin nasıl hazırlandığı, donatının nasıl yerleştiği,
+            yalıtımın nerede kesildiği.
+          </p>
+          <p>
+            Bu kararların hepsini aynı ekip verdiğinde, sorumluluk dağılmaz.
+            ASAF'ta planlama, uygulama ve teslim tek zincirde ilerler; taşeron
+            koordinasyonu da bu zincirin içindedir.
+          </p>
+        </div>
+        <a class="link-arrow" href={url("surec/")}>
+          Çalışma sürecimiz <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <Figure
+        src={`images/${villa.webp ?? villa.image}`}
+        fallback={`images/${villa.image}`}
+        alt={villa.alt}
+        width={villa.width}
+        height={villa.height}
+        title={villa.title}
+        caption={villa.caption}
+        lightbox
+        ratio="4 / 5"
+        sizes="(min-width: 62rem) 40vw, 92vw"
+        class="split__media"
+      />
+    </div>
+  </section>
+
+  {/* --- Hizmetler ---------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Hizmetler</p>
+          <h2 class="section-head__title">İnşaat tarafında <span class="foil">ne yapıyoruz</span></h2>
+        </div>
+        <p class="prose">
+          Altı ana başlık. Bir proje bunların hepsini ya da yalnızca birkaçını
+          kapsayabilir; kapsam görüşmede birlikte belirlenir.
+        </p>
+      </header>
+
+      <ServiceGrid items={constructionServices} />
+    </div>
+  </section>
+
+  {/* --- Yapım aşamaları ---------------------------------------------- */}
+  <section class="section on-light">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Yapım aşamaları</p>
+          <h2 class="section-head__title">Bir yapı nasıl yükselir</h2>
+        </div>
+        <p class="prose">
+          Aşamaların sırası değişmez; süreleri projeye göre değişir. Hangi
+          aşamada olduğunuz her zaman bellidir.
+        </p>
+      </header>
+
+      <ol class="phases">
+        {phases.map((phase, i) => (
+          <li class="phase" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+            <span class="phase__index">{phase.index}</span>
+            <div>
+              <h3 class="phase__title">{phase.title}</h3>
+              <p class="phase__text">{phase.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* --- Kalite ------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide split split--reverse">
+      <Figure
+        src="images/concepts/detail.webp"
+        small="images/concepts/detail-840.webp"
+        alt={visuals.detail.alt}
+        width={visuals.detail.width}
+        height={visuals.detail.height}
+        isConcept
+        ratio="4 / 5"
+        sizes="(min-width: 62rem) 40vw, 92vw"
+        class="split__media"
+      />
+
+      <div class="split__text" data-reveal>
+        <p class="eyebrow">Kalite çerçevesi</p>
+        <h2 class="split__title">Beş başlıkta <span class="foil">taahhüt</span></h2>
+        <p class="prose">
+          Aşağıdakiler pazarlama cümlesi değil, sözleşmeye giren maddelerdir.
+        </p>
+        <dl class="spec">
+          {qualityRows.map((row) => (
+            <div class="spec__row">
+              <dt class="spec__key">{row.key}</dt>
+              <dd class="spec__val">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  {/* --- İş güvenliği -------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide safety">
+      <Figure
+        src="images/asaf-is-guvenligi-yelekleri.webp"
+        fallback="images/asaf-is-guvenligi-yelekleri.jpg"
+        alt="Üzerinde ASAF logosu bulunan iş güvenliği yelekleri"
+        width={1440}
+        height={1080}
+        title="İş güvenliği ekipmanı"
+        caption="Sahada kullanılan, marka logolu iş güvenliği yelekleri."
+        lightbox
+        ratio="16 / 10"
+        sizes="(min-width: 62rem) 52vw, 92vw"
+        class="safety__media"
+      />
+      <div class="safety__text" data-reveal>
+        <p class="eyebrow">Sahada</p>
+        <h2 class="split__title">Güvenlik, hızdan önce gelir</h2>
+        <div class="prose">
+          <p>
+            Şantiyede düzen ve koruyucu ekipman kullanımı pazarlık konusu
+            değildir. Sahada çalışan herkesin aynı standarda uyması beklenir.
+          </p>
+          <p>
+            Bu yaklaşım yalnızca çalışan güvenliği için değil, işin kalitesi
+            için de geçerlidir: düzenli şantiye, düzgün imalat üretir.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* --- SSS ----------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--narrow">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Sık sorulanlar</p>
+        <h2 class="section-head__title">İnşaat tarafında <span class="foil">merak edilenler</span></h2>
+      </header>
+      <div data-reveal>
+        <Faq items={pageFaq} name="insaat-faq" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Arsanız veya yapınız"
+    accent="ne durumda?"
+    text="Mevcut durumu anlatın; yerinde görüp nasıl ilerleyeceğimizi somut biçimde paylaşalım."
+  />
+</BaseLayout>
+
+<style>
+  .split { display: grid; gap: var(--space-xl); align-items: center; }
+  @media (min-width: 62rem) {
+    .split {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+      gap: var(--space-3xl);
+    }
+    .split--reverse { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); }
+  }
+  .split__text { display: grid; gap: var(--space-m); justify-items: start; }
+  .split__title { font-size: var(--step-4); }
+  .split :global(.split__media) { inline-size: 100%; }
+
+  .phases {
+    display: grid;
+    gap: var(--space-l) var(--space-2xl);
+  }
+  @media (min-width: 46rem) { .phases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 76rem) { .phases { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .phase {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-s);
+    align-items: start;
+    padding-block-start: var(--space-m);
+    border-block-start: 1px solid var(--line-gold);
+  }
+  .phase__index {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .phase__title { font-size: var(--step-1); margin-block-end: var(--space-3xs); }
+  .phase__text { color: var(--fg-muted); font-size: var(--step--1); }
+
+  .safety { display: grid; gap: var(--space-xl); align-items: center; }
+  @media (min-width: 62rem) {
+    .safety { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-3xl); }
+  }
+  .safety__text { display: grid; gap: var(--space-m); }
+  .safety :global(.safety__media) { inline-size: 100%; }
+</style>

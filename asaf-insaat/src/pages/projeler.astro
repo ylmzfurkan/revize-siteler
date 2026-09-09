@@ -1,0 +1,301 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Figure from "../components/Figure.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { visuals } from "../data/visuals";
+import { projects } from "../data/business";
+
+type Item = {
+  id: string;
+  kind: "saha" | "konsept";
+  kindLabel: string;
+  title: string;
+  caption: string;
+  src: string;
+  small?: string | null;
+  fallback?: string | null;
+  alt: string;
+  width: number;
+  height: number;
+  ratio: string;
+  isConcept: boolean;
+  wide?: boolean;
+};
+
+/* Doğrulanmış saha fotoğrafları — kaynak: firmanın Instagram paylaşımları. */
+const siteItems: Item[] = projects.map((project, i) => ({
+  id: project.slug,
+  kind: "saha",
+  kindLabel: "Saha kaydı",
+  title: project.title,
+  caption: project.caption,
+  src: `images/${project.webp ?? project.image}`,
+  fallback: `images/${project.image}`,
+  alt: project.alt,
+  width: project.width,
+  height: project.height,
+  ratio: i === 0 ? "4 / 3" : "1 / 1",
+  isConcept: false,
+}));
+
+const safetyItem: Item = {
+  id: "is-guvenligi",
+  kind: "saha",
+  kindLabel: "Saha kaydı",
+  title: "İş güvenliği ekipmanı",
+  caption: "Sahada kullanılan, marka logolu iş güvenliği yelekleri.",
+  src: "images/asaf-is-guvenligi-yelekleri.webp",
+  fallback: "images/asaf-is-guvenligi-yelekleri.jpg",
+  alt: "Üzerinde ASAF logosu bulunan iş güvenliği yelekleri",
+  width: 1440,
+  height: 1080,
+  ratio: "4 / 3",
+  isConcept: false,
+};
+
+/* Konsept görseller — yapay zekâ ile üretildi, firmanın işi değildir. */
+const conceptItems: Item[] = [
+  {
+    id: "konsept-mimari",
+    kind: "konsept",
+    kindLabel: "Konsept",
+    title: "Sahil villası konsepti",
+    caption: "Yansıma havuzlu sahil villası — tasarım dilini göstermek için üretilmiş konsept görsel.",
+    src: visuals.architecture.src,
+    small: visuals.architecture.small,
+    alt: visuals.architecture.alt,
+    width: visuals.architecture.width,
+    height: visuals.architecture.height,
+    ratio: "16 / 9",
+    isConcept: true,
+    wide: true,
+  },
+  {
+    id: "konsept-detay",
+    kind: "konsept",
+    kindLabel: "Konsept",
+    title: "Avlu ve malzeme detayı",
+    caption: "Traverten merdiven ve zeytin ağaçlı avlu — malzeme dilini gösteren konsept görsel.",
+    src: visuals.detail.src,
+    small: visuals.detail.small,
+    alt: visuals.detail.alt,
+    width: visuals.detail.width,
+    height: visuals.detail.height,
+    ratio: "4 / 3",
+    isConcept: true,
+  },
+  {
+    id: "konsept-otomotiv",
+    kind: "konsept",
+    kindLabel: "Konsept",
+    title: "Otomotiv sahnesi",
+    caption: "Mimari bir mekânda araç sunumu — otomotiv tarafının görsel dilini gösteren konsept.",
+    src: visuals.automotive.src,
+    small: visuals.automotive.small,
+    alt: visuals.automotive.alt,
+    width: visuals.automotive.width,
+    height: visuals.automotive.height,
+    ratio: "16 / 9",
+    isConcept: true,
+    wide: true,
+  },
+];
+
+const items: Item[] = [siteItems[0], conceptItems[0], siteItems[1], conceptItems[1], safetyItem, conceptItems[2]];
+
+const filters = [
+  { id: "tumu", label: "Tümü", count: items.length },
+  { id: "saha", label: "Saha kaydı", count: items.filter((i) => i.kind === "saha").length },
+  { id: "konsept", label: "Konsept", count: items.filter((i) => i.kind === "konsept").length },
+];
+---
+
+<BaseLayout
+  title="Projeler"
+  description="ASAF görsel arşivi: doğrulanmış şantiye kayıtları ve tasarım dilini gösteren konsept çalışmalar."
+>
+  <PageHero
+    eyebrow="Projeler"
+    title="Sahadan ve"
+    accent="tasarım masasından"
+    lead="Doğrulanmış şantiye kayıtları ile tasarım dilini gösteren konsept çalışmalar bir arada — ve her biri açıkça etiketli."
+  />
+
+  {/* --- Şeffaflık notu ----------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--narrow" data-reveal>
+      <p class="pending">
+        <strong>Arşiv henüz tamamlanmadı.</strong>
+        Aşağıda yalnızca doğrulanabilen kareler yer alıyor. Firmanın tamamladığı
+        işlerin fotoğrafları geldikçe bu sayfa gerçek proje arşiviyle
+        genişleyecek ve konsept görseller kaldırılacak.
+      </p>
+    </div>
+  </section>
+
+  {/* --- Galeri --------------------------------------------------------- */}
+  <section class="section section--flush-top">
+    <div class="shell shell--wide">
+      <div class="filters" role="group" aria-label="Görsel türüne göre filtrele" data-filters>
+        {filters.map((filter, i) => (
+          <button
+            type="button"
+            class:list={["filter", { "is-active": i === 0 }]}
+            data-filter={filter.id}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            {filter.label}
+            <span class="filter__count">{filter.count}</span>
+          </button>
+        ))}
+      </div>
+
+      <p class="filters__status" role="status" data-filter-status>
+        {items.length} görsel gösteriliyor.
+      </p>
+
+      <ul class="gallery" data-gallery>
+        {items.map((item, i) => (
+          <li
+            class:list={["gallery__cell", { "gallery__cell--wide": item.wide }]}
+            data-kind={item.kind}
+            data-reveal
+            style={`--reveal-delay:${i * 60}ms`}
+          >
+            <Figure
+              src={item.src}
+              small={item.small}
+              fallback={item.fallback}
+              alt={item.alt}
+              width={item.width}
+              height={item.height}
+              ratio={item.ratio}
+              isConcept={item.isConcept}
+              title={item.title}
+              caption={item.caption}
+              lightbox
+              sizes="(min-width: 62rem) 46vw, 92vw"
+              class="gallery__media"
+            />
+            <div class="gallery__meta">
+              <span class:list={["tag", { "tag--muted": item.kind === "konsept" }]}>{item.kindLabel}</span>
+              <h2 class="gallery__title">{item.title}</h2>
+              <p class="gallery__caption">{item.caption}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Bir sonraki kare"
+    accent="sizin projeniz olsun"
+    text="Aklınızdaki işi anlatın; arşivin bir sonraki fotoğrafı sizin şantiyenizden gelsin."
+  />
+</BaseLayout>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-end: var(--space-s);
+  }
+  .filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    min-block-size: 44px;
+    padding-inline: var(--space-s);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--muted);
+    transition:
+      color var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+  .filter:hover { color: var(--paper); border-color: var(--line-gold); }
+  .filter.is-active {
+    color: var(--ink-000);
+    background: linear-gradient(180deg, var(--gold-200), var(--gold-400));
+    border-color: transparent;
+  }
+  .filter__count {
+    font-size: 0.72em;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .filters__status {
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
+    color: var(--muted-dim);
+    margin-block-end: var(--space-l);
+  }
+
+  .gallery { display: grid; gap: var(--space-l); }
+  @media (min-width: 56rem) {
+    .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2xl) var(--space-l); }
+    .gallery__cell--wide { grid-column: 1 / -1; }
+  }
+
+  .gallery__cell { display: grid; gap: var(--space-s); }
+  .gallery__cell[hidden] { display: none; }
+  .gallery__cell :global(.gallery__media) { inline-size: 100%; }
+
+  .gallery__meta { display: grid; gap: var(--space-2xs); justify-items: start; }
+  .gallery__title { font-size: var(--step-2); }
+  .gallery__caption { color: var(--muted); font-size: var(--step--1); max-inline-size: 58ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .filter { transition: none; }
+  }
+</style>
+
+<script>
+  function initFilters() {
+    const group = document.querySelector<HTMLElement>("[data-filters]");
+    const gallery = document.querySelector<HTMLElement>("[data-gallery]");
+    const status = document.querySelector<HTMLElement>("[data-filter-status]");
+    if (!group || !gallery || group.dataset.ready === "1") return;
+    group.dataset.ready = "1";
+
+    const buttons = [...group.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+    const cells = [...gallery.querySelectorAll<HTMLElement>("[data-kind]")];
+
+    const apply = (id: string) => {
+      let shown = 0;
+      cells.forEach((cell) => {
+        const match = id === "tumu" || cell.dataset.kind === id;
+        cell.hidden = !match;
+        if (match) shown += 1;
+      });
+      buttons.forEach((btn) => {
+        const active = btn.dataset.filter === id;
+        btn.classList.toggle("is-active", active);
+        btn.setAttribute("aria-pressed", String(active));
+      });
+      // Ekran okuyucular için sonuç sayısı duyurulur.
+      if (status) status.textContent = `${shown} görsel gösteriliyor.`;
+    };
+
+    const onClick = (e: Event) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-filter]");
+      if (btn?.dataset.filter) apply(btn.dataset.filter);
+    };
+
+    group.addEventListener("click", onClick);
+    document.addEventListener("astro:before-swap", () => group.removeEventListener("click", onClick), {
+      once: true,
+    });
+  }
+
+  // İlk astro:page-load bu modülden önce gönderildiği için doğrudan çağrılır.
+  initFilters();
+  document.addEventListener("astro:page-load", initFilters);
+</script>

@@ -50,10 +50,19 @@ jobs:
         working-directory: kunefedeyiz
         run: npm run build
 
+      - name: Install dependencies (ASAF Otomotiv ve İnşaat)
+        working-directory: asaf-insaat
+        run: npm ci
+
+      - name: Build ASAF Otomotiv ve İnşaat
+        working-directory: asaf-insaat
+        run: npm run build
+
       - name: Prepare Pages artifact
         run: |
-          mkdir -p _site/balikci-kenan _site/aras-cag-kebap _site/kunefedeyiz
+          mkdir -p _site/balikci-kenan _site/aras-cag-kebap _site/kunefedeyiz _site/asaf-insaat
           cp -R balikci-kenan/dist/. _site/balikci-kenan/
+          cp -R asaf-insaat/dist/. _site/asaf-insaat/
           cp -R aras-cag-kebap/dist/. _site/aras-cag-kebap/
           cp -R kunefedeyiz/dist/. _site/kunefedeyiz/
           cat > _site/index.html <<'HTML'
@@ -79,6 +88,7 @@ jobs:
                   <li><a href="./balikci-kenan/">Balıkçı Kenan</a></li>
                   <li><a href="./aras-cag-kebap/">Aras Cağ Kebap</a></li>
                   <li><a href="./kunefedeyiz/">Künefedeyiz</a></li>
+                  <li><a href="./asaf-insaat/">ASAF Otomotiv ve İnşaat</a></li>
                 </ul>
               </main>
             </body>

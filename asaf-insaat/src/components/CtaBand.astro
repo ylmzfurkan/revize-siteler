@@ -1,0 +1,70 @@
+---
+import BrandMark from "./BrandMark.astro";
+import { url } from "../data/urls";
+import { business } from "../data/business";
+
+export interface Props {
+  title?: string;
+  accent?: string;
+  text?: string;
+}
+
+const {
+  title = "Bir sonraki yapıyı",
+  accent = "birlikte kuralım",
+  text = "Aklınızdaki projeyi anlatın; arsanın veya yapının durumuna göre nasıl ilerleyeceğimizi net biçimde paylaşalım.",
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="cta__glow" aria-hidden="true"></div>
+  <div class="shell cta__inner" data-reveal>
+    <BrandMark size="clamp(3.6rem, 10vw, 6rem)" duration="8s" halo class="cta__mark" />
+    <h2 class="cta__title">{title} <span class="foil">{accent}</span></h2>
+    <p class="cta__text">{text}</p>
+    <div class="btn-row cta__actions">
+      <a class="btn btn--primary" href={url("iletisim/")}>
+        İletişime geçin <span class="btn__arrow" aria-hidden="true">↗</span>
+      </a>
+      {business.social.instagram && (
+        <a class="btn btn--ghost" href={business.social.instagram} target="_blank" rel="noopener noreferrer">
+          Instagram'da inceleyin <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding-block: var(--space-4xl);
+    background: var(--ink-000);
+    border-block-start: 1px solid var(--line-soft);
+    overflow: hidden;
+    isolation: isolate;
+    text-align: center;
+  }
+
+  .cta__glow {
+    position: absolute;
+    inset-block-start: -30%;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    inline-size: min(150%, 1400px);
+    aspect-ratio: 2 / 1;
+    z-index: -1;
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      color-mix(in oklab, var(--gold-300) 16%, transparent),
+      transparent 68%
+    );
+    pointer-events: none;
+  }
+
+  .cta__inner { display: grid; justify-items: center; gap: var(--space-m); }
+  .cta :global(.cta__mark) { margin-block-end: var(--space-xs); }
+  .cta__title { font-size: var(--step-5); max-inline-size: 18ch; }
+  .cta__text { color: var(--muted); max-inline-size: 52ch; }
+  .cta__actions { justify-content: center; margin-block-start: var(--space-xs); }
+</style>

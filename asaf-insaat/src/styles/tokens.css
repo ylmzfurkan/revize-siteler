@@ -1,0 +1,125 @@
+/* =========================================================================
+   ASAF — Tasarım jetonları (design tokens)
+   Tek kaynak: marka rengi altın #F0C850 + siyah #0A0A0A (research/brand).
+   Tüm ölçekler akışkan (fluid); kırılma noktası yerine clamp() kullanılır.
+   ========================================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Yüzeyler -------------------------------------------------------- */
+  --ink-000: #050506;   /* en derin zemin */
+  --ink-050: #08090B;
+  --ink-100: #0C0D11;   /* varsayılan gövde */
+  --ink-200: #111318;   /* yükseltilmiş kart */
+  --ink-300: #171A20;
+  --ink-400: #1F232B;
+
+  /* --- Altın ölçeği ---------------------------------------------------- */
+  --gold-100: #FCEFCE;
+  --gold-200: #F7DFA6;
+  --gold-300: #F0C850;  /* marka altını */
+  --gold-400: #DFB246;
+  --gold-500: #C08F2E;
+  --gold-700: #7E5C1B;
+  --gold-900: #3B2B0C;
+
+  /* --- Nötrler --------------------------------------------------------- */
+  --paper: #F6F4EF;     /* marka beyazı */
+  --paper-dim: #D9D6CE;
+  --muted: #9A9C9F;
+  --muted-dim: #6E7176;
+
+  /* --- Çizgi & cam ------------------------------------------------------ */
+  --line: color-mix(in oklab, var(--paper) 12%, transparent);
+  --line-soft: color-mix(in oklab, var(--paper) 7%, transparent);
+  --line-gold: color-mix(in oklab, var(--gold-300) 32%, transparent);
+  --glass: color-mix(in oklab, var(--ink-100) 72%, transparent);
+
+  /* --- Semantik -------------------------------------------------------- */
+  --bg: var(--ink-100);
+  --fg: var(--paper);
+  --fg-muted: var(--muted);
+  --accent: var(--gold-300);
+
+  /* --- Tipografi ------------------------------------------------------- */
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+
+  /* 320px → 1600px arası akışkan ölçek */
+  --step--2: clamp(0.69rem, 0.67rem + 0.09vw, 0.75rem);
+  --step--1: clamp(0.83rem, 0.79rem + 0.18vw, 0.94rem);
+  --step-0:  clamp(1rem, 0.95rem + 0.23vw, 1.13rem);
+  --step-1:  clamp(1.2rem, 1.11rem + 0.43vw, 1.5rem);
+  --step-2:  clamp(1.44rem, 1.29rem + 0.73vw, 2rem);
+  --step-3:  clamp(1.73rem, 1.49rem + 1.18vw, 2.66rem);
+  /*
+   * Üst basamakların alt sınırı, Türkçenin uzun kelimelerine göre belirlendi:
+   * 320px genişlikte "gerçekleştirelim" tek satıra sığmalı, kırpılmamalı.
+   */
+  --step-4:  clamp(1.5rem, 1.09rem + 2.03vw, 3.13rem);
+  --step-5:  clamp(1.75rem, 1.19rem + 2.81vw, 4rem);
+  --step-6:  clamp(2.13rem, 1.34rem + 3.91vw, 5.25rem);
+  --step-7:  clamp(2.06rem, 0.92rem + 5.7vw, 6.63rem);
+
+  --tracking-wide: 0.18em;
+  --tracking-tight: -0.02em;
+
+  /* --- Boşluk ---------------------------------------------------------- */
+  --space-3xs: clamp(0.25rem, 0.24rem + 0.05vw, 0.31rem);
+  --space-2xs: clamp(0.5rem, 0.48rem + 0.11vw, 0.56rem);
+  --space-xs:  clamp(0.75rem, 0.71rem + 0.16vw, 0.88rem);
+  --space-s:   clamp(1rem, 0.95rem + 0.23vw, 1.13rem);
+  --space-m:   clamp(1.5rem, 1.43rem + 0.34vw, 1.69rem);
+  --space-l:   clamp(2rem, 1.91rem + 0.45vw, 2.25rem);
+  --space-xl:  clamp(3rem, 2.86rem + 0.68vw, 3.38rem);
+  --space-2xl: clamp(4rem, 3.64rem + 1.82vw, 5rem);
+  --space-3xl: clamp(5rem, 4.09rem + 4.55vw, 7.5rem);
+  --space-4xl: clamp(6rem, 4.18rem + 9.09vw, 11rem);
+
+  /* --- Yerleşim -------------------------------------------------------- */
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --measure: 68ch;
+  --wide: 1520px;
+  --content: 1180px;
+  --narrow: 820px;
+  --header-h: clamp(68px, 8vw, 92px);
+
+  /* --- Yuvarlaklık & gölge --------------------------------------------- */
+  --radius-s: 6px;
+  --radius-m: 14px;
+  --radius-l: 24px;
+  --radius-xl: 34px;
+  --shadow-soft: 0 24px 60px -30px rgb(0 0 0 / 0.85);
+  --shadow-lift: 0 40px 90px -40px rgb(0 0 0 / 0.95);
+  --shadow-gold: 0 30px 70px -40px color-mix(in oklab, var(--gold-300) 55%, transparent);
+
+  /* --- Hareket --------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 0.68, 0.28, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --dur-fast: 180ms;
+  --dur: 380ms;
+  --dur-slow: 780ms;
+
+  /* Hareket azaltma tercihinde 0'a çekilir; her animasyon bunu çarpan alır. */
+  --motion: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion: 0; }
+}
+
+/* Açık zeminli bölümler (editoryal kontrast için) */
+.on-light {
+  --bg: var(--paper);
+  --fg: #14161A;
+  --fg-muted: #55595F;
+  --line: color-mix(in oklab, #14161A 14%, transparent);
+  --line-soft: color-mix(in oklab, #14161A 8%, transparent);
+  --line-gold: color-mix(in oklab, var(--gold-700) 40%, transparent);
+  --glass: color-mix(in oklab, var(--paper) 76%, transparent);
+  --accent: var(--gold-700);
+  color-scheme: light;
+}

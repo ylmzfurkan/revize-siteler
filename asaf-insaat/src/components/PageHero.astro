@@ -1,0 +1,108 @@
+---
+/** PageHero — iç sayfaların açılış bloğu. */
+import Figure from "./Figure.astro";
+import BrandMark from "./BrandMark.astro";
+
+export interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  lead?: string;
+  visual?: {
+    src: string;
+    small?: string | null;
+    fallback?: string | null;
+    alt: string;
+    width: number;
+    height: number;
+    isConcept?: boolean;
+  } | null;
+}
+
+const { eyebrow, title, accent, lead, visual = null } = Astro.props;
+---
+
+<section class="page-hero">
+  {visual && (
+    <div class="page-hero__bg" aria-hidden="true">
+      <Figure
+        src={visual.src}
+        small={visual.small}
+        fallback={visual.fallback}
+        alt=""
+        width={visual.width}
+        height={visual.height}
+        hover={false}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="page-hero__media"
+      />
+      <span class="page-hero__scrim"></span>
+    </div>
+  )}
+
+  <div class="shell shell--wide page-hero__inner">
+    <div class="page-hero__text">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="page-hero__title">
+        {title}{accent && <> <span class="foil">{accent}</span></>}
+      </h1>
+      {lead && <p class="lead page-hero__lead">{lead}</p>}
+    </div>
+    <BrandMark size="clamp(3rem, 7vw, 5.4rem)" duration="10s" class="page-hero__mark" />
+  </div>
+
+  {visual?.isConcept && <span class="concept-flag page-hero__flag">Konsept görsel</span>}
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    min-block-size: clamp(420px, 62svh, 720px);
+    padding-block: calc(var(--header-h) + var(--space-2xl)) var(--space-2xl);
+    background: var(--ink-000);
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+  .page-hero__bg :global(.page-hero__media) { block-size: 100%; border-radius: 0; }
+  .page-hero__bg :global(.page-hero__media img) {
+    block-size: 100%;
+    object-fit: cover;
+    transform: scale(1.04);
+  }
+  .page-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, color-mix(in oklab, var(--ink-000) 82%, transparent), transparent 42%),
+      linear-gradient(0deg, var(--ink-100) 1%, color-mix(in oklab, var(--ink-000) 72%, transparent) 34%, color-mix(in oklab, var(--ink-000) 25%, transparent) 100%);
+  }
+
+  .page-hero__inner {
+    display: grid;
+    gap: var(--space-l);
+    align-items: end;
+  }
+  @media (min-width: 62rem) {
+    .page-hero__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-2xl);
+    }
+  }
+
+  .page-hero__text { display: grid; gap: var(--space-m); justify-items: start; }
+  .page-hero__title { font-size: var(--step-6); max-inline-size: 17ch; }
+  .page-hero__lead { color: var(--paper-dim); }
+
+  .page-hero :global(.page-hero__mark) { display: none; }
+  @media (min-width: 62rem) {
+    .page-hero :global(.page-hero__mark) { display: inline-grid; justify-self: end; }
+  }
+
+  .page-hero__flag { inset-block-end: var(--space-m); inset-inline-start: var(--gutter); }
+</style>

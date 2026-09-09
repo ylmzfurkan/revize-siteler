@@ -1,0 +1,359 @@
+---
+import "../styles/app.css";
+import { ClientRouter } from "astro:transitions";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { business } from "../data/business";
+import { url } from "../data/urls";
+
+export interface Props {
+  title: string;
+  description?: string;
+  /** Başlık hero'nun üzerine biner (tam ekran açılışlı sayfalar). */
+  overlayHeader?: boolean;
+}
+
+const {
+  title,
+  description = business.tagline,
+  overlayHeader = false,
+} = Astro.props;
+
+const pathname = Astro.url.pathname;
+
+/* Yapılandırılmış veri: yalnızca doğrulanmış alanlar yazılır. */
+const jsonLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  name: business.legalName,
+  alternateName: business.name,
+  description: business.tagline,
+  knowsLanguage: "tr",
+};
+if (business.social.instagram) jsonLd.sameAs = [business.social.instagram];
+if (business.contact.phone) jsonLd.telephone = business.contact.phone;
+if (business.contact.email) jsonLd.email = business.contact.email;
+if (business.contact.address) {
+  jsonLd.address = { "@type": "PostalAddress", streetAddress: business.contact.address };
+}
+---
+
+<!doctype html>
+<html lang="tr" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | ASAF Otomotiv ve İnşaat</title>
+    <meta name="description" content={description} />
+    {/* Taslak yayında değil: arama motorlarına kapalı. Yayına alırken kaldırılacak. */}
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#0C0D11" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ASAF Otomotiv ve İnşaat" />
+    <meta property="og:title" content={`${title} | ASAF`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="tr_TR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href={url("logo-mark.svg")} type="image/svg+xml" />
+    <link rel="icon" href={url("favicon.ico")} sizes="32x32" />
+    <script is:inline>
+      document.documentElement.classList.remove("no-js");
+    </script>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+    <ClientRouter />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">İçeriğe geç</a>
+
+    <SiteHeader overlay={overlayHeader} pathname={pathname} />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <button class="to-top" type="button" data-to-top hidden>
+      <span class="sr-only">Sayfanın başına dön</span>
+      <span aria-hidden="true">↑</span>
+    </button>
+
+    <dialog class="lightbox" data-lightbox-dialog aria-label="Görsel önizleme">
+      <form method="dialog" class="lightbox__close">
+        <button aria-label="Kapat">×</button>
+      </form>
+      <figure>
+        <img alt="" data-lightbox-image />
+        <figcaption>
+          <strong data-lightbox-title></strong>
+          <span data-lightbox-caption></span>
+        </figcaption>
+      </figure>
+    </dialog>
+
+    <style is:global>
+      .to-top {
+        position: fixed;
+        inset-block-end: clamp(1rem, 3vw, 2rem);
+        inset-inline-end: clamp(1rem, 3vw, 2rem);
+        z-index: 70;
+        display: grid;
+        place-items: center;
+        inline-size: 48px;
+        block-size: 48px;
+        border-radius: 999px;
+        border: 1px solid var(--line-gold);
+        background: color-mix(in oklab, var(--ink-100) 82%, transparent);
+        backdrop-filter: blur(12px);
+        color: var(--gold-300);
+        transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-spring);
+      }
+      .to-top[hidden] { display: none; }
+      .to-top:hover { transform: translateY(-3px); }
+
+      .lightbox {
+        border: 0;
+        padding: 0;
+        max-width: min(96vw, 1300px);
+        max-height: 92svh;
+        background: var(--ink-050);
+        color: var(--paper);
+        border-radius: var(--radius-l);
+        overflow: hidden;
+      }
+      .lightbox::backdrop {
+        background: color-mix(in oklab, #000 82%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .lightbox figure { display: grid; margin: 0; }
+      .lightbox img {
+        inline-size: 100%;
+        max-block-size: 74svh;
+        object-fit: contain;
+        background: #000;
+      }
+      .lightbox figcaption {
+        display: grid;
+        gap: 4px;
+        padding: var(--space-m) var(--space-l) var(--space-l);
+        font-size: var(--step--1);
+        color: var(--muted);
+      }
+      .lightbox figcaption strong {
+        font-family: var(--font-display);
+        font-size: var(--step-1);
+        font-weight: 500;
+        color: var(--paper);
+      }
+      .lightbox__close {
+        position: absolute;
+        inset-block-start: var(--space-xs);
+        inset-inline-end: var(--space-xs);
+        z-index: 2;
+        margin: 0;
+      }
+      .lightbox__close button {
+        inline-size: 42px;
+        block-size: 42px;
+        border-radius: 999px;
+        font-size: 1.4rem;
+        line-height: 1;
+        background: color-mix(in oklab, var(--ink-000) 65%, transparent);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(10px);
+        color: var(--paper);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .to-top { transition: none; }
+      }
+
+      /* Sayfa geçişi: içerik yumuşakça yer değiştirir. */
+      @media (prefers-reduced-motion: no-preference) {
+        ::view-transition-old(root) { animation: vt-out 200ms var(--ease-out) both; }
+        ::view-transition-new(root) { animation: vt-in 360ms var(--ease-out) both; }
+      }
+      @keyframes vt-out { to { opacity: 0; } }
+      @keyframes vt-in { from { opacity: 0; transform: translateY(12px); } }
+    </style>
+
+    <script>
+      type Cleanup = () => void;
+      let cleanups: Cleanup[] = [];
+
+      const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* --- Kaydırınca beliriş ------------------------------------------- */
+      function initReveal() {
+        const items = document.querySelectorAll<HTMLElement>("[data-reveal]");
+        if (!items.length) return;
+        if (reduced() || !("IntersectionObserver" in window)) {
+          items.forEach((el) => el.classList.add("is-revealed"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add("is-revealed");
+              io.unobserve(entry.target);
+            });
+          },
+          { rootMargin: "0px 0px -12% 0px", threshold: 0.08 },
+        );
+        items.forEach((el) => io.observe(el));
+        cleanups.push(() => io.disconnect());
+      }
+
+      /* --- Başlık: kaydırma yönüne göre gizlenir ------------------------- */
+      function initHeader() {
+        const header = document.querySelector<HTMLElement>("[data-header]");
+        if (!header) return;
+        let last = window.scrollY;
+        const onScroll = () => {
+          const y = window.scrollY;
+          header.classList.toggle("is-stuck", y > 24);
+          const menuOpen = document.body.classList.contains("is-locked");
+          header.classList.toggle("is-hidden", !menuOpen && y > 320 && y > last);
+          last = y;
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+        cleanups.push(() => window.removeEventListener("scroll", onScroll));
+      }
+
+      /* --- Mobil menü ---------------------------------------------------- */
+      function initMenu() {
+        const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+        const menu = document.querySelector<HTMLElement>("[data-mobile-nav]");
+        if (!toggle || !menu) return;
+
+        const setOpen = (open: boolean) => {
+          toggle.setAttribute("aria-expanded", String(open));
+          const label = toggle.querySelector(".sr-only");
+          if (label) label.textContent = open ? "Menüyü kapat" : "Menüyü aç";
+          menu.hidden = !open;
+          menu.classList.toggle("is-open", open);
+          document.body.classList.toggle("is-locked", open);
+        };
+
+        const onToggle = () => setOpen(toggle.getAttribute("aria-expanded") !== "true");
+        const onKey = (e: KeyboardEvent) => {
+          if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+            setOpen(false);
+            toggle.focus();
+          }
+        };
+        // Bağlantıya basınca menü kapanır; görünüm geçişinde açık kalmasın.
+        const onLink = (e: Event) => {
+          if ((e.target as HTMLElement).closest("a")) setOpen(false);
+        };
+        const mq = matchMedia("(min-width: 62rem)");
+        const onMq = () => { if (mq.matches) setOpen(false); };
+
+        toggle.addEventListener("click", onToggle);
+        document.addEventListener("keydown", onKey);
+        menu.addEventListener("click", onLink);
+        mq.addEventListener("change", onMq);
+
+        cleanups.push(() => {
+          toggle.removeEventListener("click", onToggle);
+          document.removeEventListener("keydown", onKey);
+          menu.removeEventListener("click", onLink);
+          mq.removeEventListener("change", onMq);
+          document.body.classList.remove("is-locked");
+        });
+      }
+
+      /* --- Kart üzerinde imleci izleyen parıltı --------------------------- */
+      function initCardGlow() {
+        if (reduced() || !matchMedia("(hover: hover)").matches) return;
+        if (!document.querySelector(".card")) return;
+        const onMove = (e: PointerEvent) => {
+          const card = (e.target as HTMLElement).closest<HTMLElement>(".card");
+          if (!card) return;
+          const r = card.getBoundingClientRect();
+          card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+          card.style.setProperty("--my", `${e.clientY - r.top}px`);
+        };
+        document.addEventListener("pointermove", onMove, { passive: true });
+        cleanups.push(() => document.removeEventListener("pointermove", onMove));
+      }
+
+      /* --- Görsel büyütme ------------------------------------------------- */
+      function initLightbox() {
+        const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox-dialog]");
+        if (!dialog) return;
+        const img = dialog.querySelector<HTMLImageElement>("[data-lightbox-image]")!;
+        const titleEl = dialog.querySelector<HTMLElement>("[data-lightbox-title]")!;
+        const capEl = dialog.querySelector<HTMLElement>("[data-lightbox-caption]")!;
+        let opener: HTMLElement | null = null;
+
+        const onClick = (e: MouseEvent) => {
+          const trigger = (e.target as HTMLElement).closest<HTMLAnchorElement>("[data-lightbox]");
+          if (!trigger) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          e.preventDefault();
+          opener = trigger;
+          img.src = trigger.href;
+          img.alt = trigger.dataset.alt || "";
+          titleEl.textContent = trigger.dataset.title || "";
+          capEl.textContent = trigger.dataset.caption || "";
+          dialog.showModal();
+        };
+        // Görselin dışına tıklayınca kapanır.
+        const onBackdrop = (e: MouseEvent) => {
+          if (e.target === dialog) dialog.close();
+        };
+        const onClose = () => { opener?.focus(); opener = null; };
+
+        // Yakalama fazı şart: ClientRouter aynı kaynaklı bağlantı
+        // tıklamalarını kabarma fazında yakalayıp sayfa geçişi başlatıyor.
+        // Görsel bağlantıları da aynı kaynakta olduğu için önce biz almalıyız.
+        document.addEventListener("click", onClick, true);
+        dialog.addEventListener("click", onBackdrop);
+        dialog.addEventListener("close", onClose);
+        cleanups.push(() => {
+          document.removeEventListener("click", onClick, true);
+          dialog.removeEventListener("click", onBackdrop);
+          dialog.removeEventListener("close", onClose);
+          if (dialog.open) dialog.close();
+        });
+      }
+
+      /* --- Başa dön ------------------------------------------------------- */
+      function initToTop() {
+        const btn = document.querySelector<HTMLButtonElement>("[data-to-top]");
+        if (!btn) return;
+        const onScroll = () => { btn.hidden = window.scrollY < 900; };
+        const onClick = () =>
+          window.scrollTo({ top: 0, behavior: reduced() ? "auto" : "smooth" });
+        window.addEventListener("scroll", onScroll, { passive: true });
+        btn.addEventListener("click", onClick);
+        onScroll();
+        cleanups.push(() => {
+          window.removeEventListener("scroll", onScroll);
+          btn.removeEventListener("click", onClick);
+        });
+      }
+
+      function boot() {
+        cleanups.forEach((fn) => fn());
+        cleanups = [];
+        initReveal();
+        initHeader();
+        initMenu();
+        initCardGlow();
+        initLightbox();
+        initToTop();
+      }
+
+      // ClientRouter, ilk astro:page-load olayını bu modül çalışmadan önce
+      // gönderiyor; bu yüzden ilk kurulum doğrudan yapılır. Sonraki sayfa
+      // geçişlerinde olay üzerinden yeniden bağlanır.
+      boot();
+      document.addEventListener("astro:page-load", boot);
+    </script>
+  </body>
+</html>

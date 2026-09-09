@@ -1,0 +1,82 @@
+---
+/**
+ * Marquee — yatay akan disiplin şeridi.
+ * İçerik iki kez basılır; ikinci kopya aria-hidden olduğu için ekran
+ * okuyucular listeyi tek kez duyar.
+ */
+export interface Props {
+  items: string[];
+  duration?: string;
+}
+
+const { items, duration = "38s" } = Astro.props;
+---
+
+<div class="marquee" style={`--marquee-duration:${duration}`}>
+  <div class="marquee__track">
+    {[0, 1].map((copy) => (
+      <ul class="marquee__group" aria-hidden={copy === 1 ? "true" : undefined}>
+        {items.map((item) => (
+          <li>
+            <span class="marquee__dot" aria-hidden="true"></span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--space-m);
+    border-block: 1px solid var(--line-soft);
+    /* Kenarlarda yumuşak kaybolma. */
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .marquee__track {
+    display: flex;
+    inline-size: max-content;
+    animation: marquee var(--marquee-duration) linear infinite;
+  }
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+
+  .marquee__group {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    padding-inline-end: clamp(1.5rem, 4vw, 3.5rem);
+  }
+  .marquee__group li {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    white-space: nowrap;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--paper-dim);
+  }
+  .marquee__dot {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: var(--gold-300);
+    flex: none;
+  }
+
+  @keyframes marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track { animation: none; }
+    .marquee { overflow-x: auto; }
+  }
+</style>

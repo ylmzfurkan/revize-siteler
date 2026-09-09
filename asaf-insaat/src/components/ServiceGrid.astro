@@ -1,0 +1,66 @@
+---
+import type { Service } from "../data/content";
+
+export interface Props {
+  items: Service[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="services">
+  {items.map((service, i) => (
+    <li class="card service" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+      <span class="card__index">{service.index}</span>
+      <h3 class="card__title">{service.title}</h3>
+      <p class="card__text">{service.text}</p>
+      <ul class="service__points">
+        {service.points.map((point) => (
+          <li>{point}</li>
+        ))}
+      </ul>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .services {
+    display: grid;
+    gap: var(--space-m);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  }
+
+  .service {
+    /* Kart genişliğine göre iç düzen: kapsayıcı sorgusu ile. */
+    container-type: inline-size;
+    gap: var(--space-xs);
+  }
+
+  .service__points {
+    display: grid;
+    gap: var(--space-3xs);
+    margin-block-start: auto;
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--line-soft);
+  }
+  .service__points li {
+    position: relative;
+    padding-inline-start: 1.15em;
+    font-size: var(--step--2);
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+  .service__points li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    inline-size: 5px;
+    block-size: 1px;
+    background: var(--gold-300);
+  }
+
+  @container (min-width: 22rem) {
+    .service__points { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3xs) var(--space-s); }
+  }
+</style>

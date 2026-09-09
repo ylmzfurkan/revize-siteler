@@ -1,0 +1,187 @@
+---
+/**
+ * BrandMark — beyaz ↔ altın dönen ASAF logosu.
+ *
+ * Logo, Y ekseninde madeni para gibi döner: bir yüzü beyaz, diğer yüzü altın.
+ * Her iki yüz de aynı SVG'nin CSS maskesidir; böylece altın yüze kayan bir
+ * folyo parıltısı uygulanabiliyor ve tek bir dosya iki renkte kullanılıyor.
+ *
+ * prefers-reduced-motion açıkken dönüş ve parıltı durur, logo sabit altın kalır.
+ */
+import { url } from "../data/urls";
+
+export interface Props {
+  /** Logo yüksekliği (herhangi bir CSS uzunluğu). */
+  size?: string;
+  /** wordmark = "ASAF" yazısı, mark = amblem, full = yazı + alt satır. */
+  glyph?: "wordmark" | "mark" | "full";
+  /** Dönüş süresi. */
+  duration?: string;
+  /** Arkasında dönen altın hâle (hero için). */
+  halo?: boolean;
+  /** Dönüşü durdurup sabit altın gösterir (footer gibi sakin alanlar için). */
+  still?: boolean;
+  class?: string;
+  label?: string;
+}
+
+const {
+  size = "3.4rem",
+  glyph = "wordmark",
+  duration = "9s",
+  halo = false,
+  still = false,
+  class: className = "",
+  label = "ASAF Otomotiv ve İnşaat",
+} = Astro.props;
+
+const files = {
+  wordmark: { src: "logo-wordmark.svg", ratio: "2254 / 2088" },
+  mark: { src: "logo-mark.svg", ratio: "1527 / 1422" },
+  full: { src: "logo-asaf-full.svg", ratio: "2254 / 2616" },
+} as const;
+
+const glyphFile = files[glyph];
+const maskUrl = url(glyphFile.src);
+
+const style = [
+  `--bm-size:${size}`,
+  `--bm-ratio:${glyphFile.ratio}`,
+  `--bm-duration:${duration}`,
+  `--bm-mask:url("${maskUrl}")`,
+].join(";");
+---
+
+<span
+  class:list={["brandmark", { "brandmark--halo": halo, "brandmark--still": still }, className]}
+  style={style}
+  role="img"
+  aria-label={label}
+>
+  {halo && <span class="brandmark__halo" aria-hidden="true"></span>}
+  <span class="brandmark__coin" aria-hidden="true">
+    <span class="brandmark__face brandmark__face--white"></span>
+    <span class="brandmark__face brandmark__face--gold"></span>
+  </span>
+</span>
+
+<style>
+  .brandmark {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    block-size: var(--bm-size);
+    aspect-ratio: var(--bm-ratio);
+    /* Dönerken üç boyutlu derinlik: perspektif olmadan yassı görünür. */
+    perspective: 900px;
+    perspective-origin: 50% 45%;
+    flex: none;
+  }
+
+  .brandmark__coin {
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    transform-style: preserve-3d;
+    animation: bm-flip var(--bm-duration) cubic-bezier(0.72, 0, 0.26, 1) infinite;
+    will-change: transform;
+  }
+
+  .brandmark__face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Tek SVG, iki renk: dosya maske olarak kullanılıyor. */
+    -webkit-mask-image: var(--bm-mask);
+    mask-image: var(--bm-mask);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .brandmark__face--white {
+    background:
+      linear-gradient(
+        104deg,
+        #ffffff 0%,
+        var(--paper) 34%,
+        #ffffff 52%,
+        var(--paper-dim) 78%,
+        #ffffff 100%
+      );
+    background-size: 240% 100%;
+    animation: bm-sheen calc(var(--bm-duration) / 1.5) linear infinite;
+  }
+
+  .brandmark__face--gold {
+    transform: rotateY(180deg);
+    background:
+      linear-gradient(
+        104deg,
+        var(--gold-700) 0%,
+        var(--gold-300) 18%,
+        var(--gold-100) 34%,
+        var(--gold-200) 46%,
+        var(--gold-400) 64%,
+        var(--gold-700) 82%,
+        var(--gold-300) 100%
+      );
+    background-size: 240% 100%;
+    animation: bm-sheen calc(var(--bm-duration) / 1.5) linear infinite;
+  }
+
+  /* Hero'da logonun arkasında yavaşça dönen altın hâle. */
+  .brandmark__halo {
+    position: absolute;
+    inset: -55% -22%;
+    z-index: -1;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      color-mix(in oklab, var(--gold-300) 26%, transparent) 70deg,
+      transparent 150deg,
+      color-mix(in oklab, var(--paper) 16%, transparent) 230deg,
+      transparent 320deg
+    );
+    filter: blur(34px);
+    opacity: 0.85;
+    animation: bm-halo calc(var(--bm-duration) * 2) linear infinite;
+    pointer-events: none;
+  }
+
+  /*
+   * Dönüş: beyaz yüzde bekle → çevir → altın yüzde bekle → çevir.
+   * Bekleme süreleri sayesinde logo sürekli fırıldamaz, okunur kalır.
+   */
+  @keyframes bm-flip {
+    0%, 38% { transform: rotateY(0deg); }
+    50%, 88% { transform: rotateY(180deg); }
+    100% { transform: rotateY(360deg); }
+  }
+
+  @keyframes bm-sheen {
+    from { background-position: 0% 50%; }
+    to { background-position: 240% 50%; }
+  }
+
+  @keyframes bm-halo {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Sakin bağlamlar: dönüş yok, doğrudan altın yüz. */
+  .brandmark--still .brandmark__coin { animation: none; transform: rotateY(180deg); }
+  .brandmark--still .brandmark__face--gold { animation-duration: 14s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brandmark__coin { animation: none; transform: rotateY(180deg); }
+    .brandmark__face { animation: none; background-position: 30% 50%; }
+    .brandmark__halo { animation: none; opacity: 0.5; }
+  }
+</style>

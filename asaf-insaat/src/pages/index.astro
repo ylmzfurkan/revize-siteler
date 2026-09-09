@@ -1,0 +1,316 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CinematicHero from "../components/CinematicHero.astro";
+import Marquee from "../components/Marquee.astro";
+import Figure from "../components/Figure.astro";
+import ProcessTimeline from "../components/ProcessTimeline.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { url } from "../data/urls";
+import { visuals } from "../data/visuals";
+import { projects } from "../data/business";
+import { pillars, process, values, faq } from "../data/content";
+
+const disciplines = [
+  "Villa ve müstakil konut",
+  "Betonarme ve kaba yapı",
+  "Cephe ve dış kabuk",
+  "İnce iş ve iç mekân",
+  "Tadilat ve yenileme",
+  "Şantiye yönetimi",
+  "Şarj altyapısı",
+  "Filo çözümleri",
+];
+
+const divisions = [
+  {
+    kicker: "01 — İnşaat",
+    title: "Temelden anahtar teslimine",
+    text: "Vaziyet planından ince işe kadar tüm imalat aşamaları tek sorumluluk zinciri içinde yürütülür. Her aşamanın nerede bitip nerede başladığı sözleşmede yazılıdır.",
+    href: "insaat/",
+    cta: "İnşaat hizmetleri",
+    visual: visuals.architecture,
+  },
+  {
+    kicker: "02 — Otomotiv",
+    title: "Yapının hareket tarafı",
+    text: "Otomotiv, inşaattan ayrı bir iş kolu değil; yapının kullanım senaryosunun parçası. En somut kesişim, elektrik altyapısı planlanırken şarj noktasının da düşünülmesi.",
+    href: "otomotiv/",
+    cta: "Otomotiv tarafı",
+    visual: visuals.automotive,
+  },
+];
+
+const homeFaq = faq.slice(0, 4);
+---
+
+<BaseLayout
+  title="Ana Sayfa"
+  description="ASAF Otomotiv ve İnşaat — villa ve müstakil konut üretimi, betonarme, cephe, ince iş ve otomotiv çözümleri. Siz hayal edin, biz gerçekleştirelim."
+  overlayHeader
+>
+  <CinematicHero />
+
+  {/* --- Giriş / manifesto -------------------------------------------- */}
+  <section class="section" id="giris">
+    <div class="shell shell--wide intro">
+      <div class="intro__lead" data-reveal>
+        <p class="eyebrow">ASAF Otomotiv ve İnşaat</p>
+        <h2 class="intro__title">
+          Bir yapının kalitesi ilk gün değil,<br />
+          <span class="foil">onuncu yılında</span> belli olur.
+        </h2>
+      </div>
+      <div class="intro__body" data-reveal style="--reveal-delay:120ms">
+        <p>
+          ASAF, inşaat ve otomotiv işlerini tek çatı altında yürüten bir şirket.
+          Yapı tarafındaki planlama disiplini ile otomotiv tarafındaki hassasiyet
+          aynı ekipte buluşuyor.
+        </p>
+        <p>
+          Çalışma biçimimiz basit: kapsamı baştan yazıyoruz, ilerlemeyi sahadan
+          belgeliyoruz ve teslimde eksik listesini birlikte çıkarıyoruz. Sürpriz
+          kalem çıkarmak yerine sınırları önceden çizmeyi tercih ediyoruz.
+        </p>
+        <a class="link-arrow" href={url("hakkimizda/")}>
+          Hakkımızda <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="shell shell--wide" data-reveal>
+    <Marquee items={disciplines} />
+  </div>
+
+  {/* --- Marka sütunları ----------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <h2 class="section-head__title">Neyi <span class="foil">farklı</span> yapıyoruz</h2>
+        <p class="prose">
+          Büyük iddialar yerine, işin nasıl yürütüldüğüne dair dört somut taahhüt.
+          Bunlar sahada karşılığı olan ilkeler; broşür cümlesi değil.
+        </p>
+      </header>
+
+      <ul class="card-grid">
+        {pillars.map((pillar, i) => (
+          <li class="card" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <span class="card__index">{pillar.index}</span>
+            <h3 class="card__title">{pillar.title}</h3>
+            <p class="card__text">{pillar.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* --- İki disiplin ---------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide divisions">
+      {divisions.map((division, i) => (
+        <article class="division" data-reveal style={`--reveal-delay:${i * 110}ms`}>
+          <Figure
+            src={division.visual.src}
+            small={division.visual.small}
+            alt={division.visual.alt}
+            width={division.visual.width}
+            height={division.visual.height}
+            isConcept={division.visual.isConcept}
+            ratio="4 / 3"
+            sizes="(min-width: 62rem) 46vw, 92vw"
+            class="division__media"
+          />
+          <div class="division__body">
+            <p class="eyebrow">{division.kicker}</p>
+            <h3 class="division__title">{division.title}</h3>
+            <p class="division__text">{division.text}</p>
+            <a class="btn btn--ghost" href={url(division.href)}>
+              {division.cta} <span class="btn__arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {/* --- Süreç ----------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Süreç</p>
+          <h2 class="section-head__title">Fikirden <span class="foil">anahtar teslime</span></h2>
+        </div>
+        <p class="prose">
+          Altı adım. Her adımın somut bir çıktısı var; böylece sürecin neresinde
+          olduğunuz her zaman belli oluyor.
+        </p>
+      </header>
+
+      <ProcessTimeline steps={process} />
+
+      <div class="section-foot" data-reveal>
+        <a class="btn btn--ghost" href={url("surec/")}>
+          Süreci ayrıntılı okuyun <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* --- Sahadan ---------------------------------------------------------- */}
+  <section class="section section--tight">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Sahadan</p>
+          <h2 class="section-head__title">Fotoğraflar <span class="foil">sahadan</span> geliyor</h2>
+        </div>
+        <p class="prose">
+          Aşağıdaki iki kare doğrulanmış şantiye fotoğrafı. Sitedeki diğer
+          görseller, müşteri arşivi gelene kadar tasarımı taşıyan konsept
+          çalışmalardır ve bu şekilde etiketlenir.
+        </p>
+      </header>
+
+      <div class="field">
+        {projects.map((project, i) => (
+          <Figure
+            src={`images/${project.webp ?? project.image}`}
+            fallback={project.webp ? `images/${project.image}` : null}
+            alt={project.alt}
+            width={project.width}
+            height={project.height}
+            title={project.title}
+            caption={project.caption}
+            lightbox
+            ratio={i === 0 ? "4 / 3" : "1 / 1"}
+            sizes="(min-width: 62rem) 40vw, 92vw"
+            class="field__item"
+          />
+        ))}
+        <div class="field__note" data-reveal>
+          <p class="prose">
+            Tamamlanan işlerin fotoğrafları geldikçe bu bölüm gerçek proje
+            arşiviyle genişleyecek. Yer tutucu görseller o aşamada kaldırılır.
+          </p>
+          <a class="link-arrow" href={url("projeler/")}>
+            Tüm görseller <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* --- Değerler (açık zemin) --------------------------------------------- */}
+  <section class="section on-light">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Çalışma ilkeleri</p>
+          <h2 class="section-head__title">Yazılı olan, yapılan olsun</h2>
+        </div>
+        <p class="prose">
+          İnşaatta güven; malzemenin, kapsamın ve terminin yazılı olmasıyla
+          başlar. Dördü de sözleşmede yer alır.
+        </p>
+      </header>
+
+      <ul class="values">
+        {values.map((value, i) => (
+          <li class="value" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <h3 class="value__title">{value.title}</h3>
+            <p class="value__text">{value.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* --- SSS ---------------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide faq-layout">
+      <header data-reveal>
+        <p class="eyebrow">Sık sorulanlar</p>
+        <h2 class="section-head__title">Merak <span class="foil">edilenler</span></h2>
+        <a class="link-arrow faq-layout__more" href={url("iletisim/")}>
+          Sorunuz burada yoksa yazın <span aria-hidden="true">↗</span>
+        </a>
+      </header>
+      <div data-reveal style="--reveal-delay:100ms">
+        <Faq items={homeFaq} name="home-faq" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  /* --- Giriş -------------------------------------------------------------- */
+  .intro { display: grid; gap: var(--space-xl); }
+  @media (min-width: 62rem) {
+    .intro {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: var(--space-3xl);
+      align-items: start;
+    }
+  }
+  .intro__lead { display: grid; gap: var(--space-m); }
+  .intro__title { font-size: var(--step-5); line-height: 1.05; }
+  .intro__body { display: grid; gap: var(--space-s); color: var(--muted); }
+  .intro__body .link-arrow { justify-self: start; margin-block-start: var(--space-2xs); }
+
+  /* --- Disiplin blokları ---------------------------------------------------- */
+  .divisions { display: grid; gap: var(--space-xl); }
+  @media (min-width: 62rem) {
+    .divisions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2xl); }
+  }
+  .division { display: grid; gap: var(--space-m); }
+  .division :global(.division__media) { inline-size: 100%; }
+  .division__body { display: grid; gap: var(--space-xs); justify-items: start; }
+  .division__title { font-size: var(--step-3); }
+  .division__text { color: var(--muted); max-inline-size: 46ch; }
+  .division__body .btn { margin-block-start: var(--space-2xs); }
+
+  .section-foot { margin-block-start: var(--space-2xl); display: flex; justify-content: center; }
+
+  /* --- Sahadan --------------------------------------------------------------- */
+  .field { display: grid; gap: var(--space-m); }
+  @media (min-width: 62rem) {
+    .field {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+      gap: var(--space-m) var(--space-l);
+    }
+    .field :global(.field__item:first-of-type) { grid-row: span 2; }
+    .field__note { align-self: end; }
+  }
+  .field__note { display: grid; gap: var(--space-s); justify-items: start; }
+
+  /* --- Değerler ---------------------------------------------------------------- */
+  .values {
+    display: grid;
+    gap: var(--space-l);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .value {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-m);
+    border-block-start: 1px solid var(--line-gold);
+  }
+  .value__title { font-size: var(--step-1); }
+  .value__text { color: var(--fg-muted); font-size: var(--step--1); }
+
+  /* --- SSS ----------------------------------------------------------------------- */
+  .faq-layout { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 62rem) {
+    .faq-layout {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-3xl);
+    }
+    .faq-layout > header { position: sticky; top: calc(var(--header-h) + var(--space-l)); }
+  }
+  .faq-layout__more { margin-block-start: var(--space-m); }
+</style>

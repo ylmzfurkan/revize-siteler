@@ -1,0 +1,165 @@
+---
+import BrandMark from "./BrandMark.astro";
+import { url } from "../data/urls";
+import { nav } from "../data/content";
+import { business } from "../data/business";
+
+const year = new Date().getFullYear();
+const contactRows = [
+  { key: "Telefon", value: business.contact.phone },
+  { key: "E-posta", value: business.contact.email },
+  { key: "Adres", value: business.contact.address },
+  { key: "Çalışma saatleri", value: business.workingHours },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__glow" aria-hidden="true"></div>
+
+  <div class="shell shell--wide site-footer__top">
+    <div class="site-footer__brand">
+      <BrandMark size="clamp(3.4rem, 9vw, 5.2rem)" duration="11s" />
+      <p class="site-footer__claim">
+        Siz hayal edin,<br /><span class="foil">biz gerçekleştirelim.</span>
+      </p>
+      <p class="site-footer__legal-name">{business.legalName}</p>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Alt menü">
+      <h2 class="site-footer__heading">Sayfalar</h2>
+      <ul>
+        {nav.map((item) => (
+          <li><a href={url(item.path)}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">İletişim</h2>
+      <dl class="site-footer__contact">
+        {contactRows.map((row) => (
+          <div>
+            <dt>{row.key}</dt>
+            <dd>{row.value ?? <span class="site-footer__pending">bilgi bekleniyor</span>}</dd>
+          </div>
+        ))}
+      </dl>
+      {business.social.instagram && (
+        <a class="link-arrow" href={business.social.instagram} target="_blank" rel="noopener noreferrer">
+          Instagram <span aria-hidden="true">↗</span>
+        </a>
+      )}
+    </div>
+  </div>
+
+  <div class="shell shell--wide site-footer__bottom">
+    <span>© {year} {business.legalName}</span>
+    <a href={url("iletisim/")}>Projenizi konuşalım <span aria-hidden="true">↗</span></a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding-block: var(--space-3xl) var(--space-l);
+    background: var(--ink-000);
+    border-block-start: 1px solid var(--line-soft);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .site-footer__glow {
+    position: absolute;
+    inset-block-start: -40%;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    inline-size: min(120%, 1100px);
+    aspect-ratio: 2 / 1;
+    z-index: -1;
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      color-mix(in oklab, var(--gold-300) 13%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .site-footer__top {
+    display: grid;
+    gap: var(--space-2xl);
+    padding-block-end: var(--space-2xl);
+  }
+  @media (min-width: 48rem) {
+    .site-footer__top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 68rem) {
+    .site-footer__top {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 1fr);
+      gap: var(--space-3xl);
+    }
+  }
+
+  .site-footer__brand { display: grid; justify-items: start; gap: var(--space-m); }
+  .site-footer__claim {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.08;
+    letter-spacing: var(--tracking-tight);
+  }
+  .site-footer__legal-name {
+    font-size: var(--step--2);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted-dim);
+  }
+
+  .site-footer__heading {
+    font-family: var(--font-body);
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--gold-300);
+    margin-block-end: var(--space-m);
+  }
+
+  .site-footer__col ul { display: grid; gap: var(--space-2xs); }
+  .site-footer__col ul a {
+    color: var(--paper-dim);
+    font-size: var(--step--1);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .site-footer__col ul a:hover { color: var(--gold-200); }
+
+  .site-footer__contact { display: grid; gap: var(--space-xs); margin-block-end: var(--space-m); }
+  .site-footer__contact div {
+    display: grid;
+    gap: 2px;
+    padding-block-end: var(--space-xs);
+    border-block-end: 1px solid var(--line-soft);
+  }
+  .site-footer__contact dt {
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted-dim);
+  }
+  .site-footer__contact dd { font-size: var(--step--1); color: var(--paper-dim); }
+  .site-footer__pending {
+    color: var(--gold-500);
+    font-style: italic;
+    font-size: 0.85em;
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-block-start: var(--space-l);
+    border-block-start: 1px solid var(--line-soft);
+    font-size: var(--step--2);
+    color: var(--muted-dim);
+  }
+  .site-footer__bottom a { color: var(--gold-300); }
+</style>

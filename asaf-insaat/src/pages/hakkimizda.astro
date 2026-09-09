@@ -1,0 +1,237 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Figure from "../components/Figure.astro";
+import Marquee from "../components/Marquee.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { url } from "../data/urls";
+import { visuals } from "../data/visuals";
+import { business } from "../data/business";
+import { pillars, values } from "../data/content";
+
+/* Yalnızca kaynakta doğrulanmış künye bilgileri; kalanı bilinçli olarak boş. */
+const identityRows = [
+  { key: "Unvan", value: business.legalName },
+  { key: "Faaliyet", value: "İnşaat ve otomotiv" },
+  { key: "Marka sloganı", value: business.tagline },
+  { key: "Kuruluş yılı", value: business.foundingYear },
+  { key: "Merkez", value: business.contact.city ?? business.contact.address },
+];
+
+const promises = [
+  "Kapsam sözleşmede yazılır",
+  "İlerleme fotoğrafla belgelenir",
+  "Malzeme sınıfı önceden belirlenir",
+  "Eksik listesi birlikte çıkarılır",
+  "İş güvenliği pazarlık konusu değildir",
+];
+---
+
+<BaseLayout
+  title="Hakkımızda"
+  description="ASAF Otomotiv ve İnşaat Ltd. Şti. — inşaat ve otomotiv işlerini tek çatı altında yürüten, kapsamı ve ilerlemeyi yazılı biçimde takip eden bir yapı şirketi."
+>
+  <PageHero
+    eyebrow="Hakkımızda"
+    title="Tek çatı,"
+    accent="iki disiplin"
+    lead="ASAF Otomotiv ve İnşaat; yapı üretimi ile otomotiv işlerini aynı şirket kültürü altında yürütüyor."
+    visual={{
+      src: visuals.detail.src,
+      small: visuals.detail.small,
+      alt: visuals.detail.alt,
+      width: visuals.detail.width,
+      height: visuals.detail.height,
+      isConcept: visuals.detail.isConcept,
+    }}
+  />
+
+  {/* --- Hikâye ------------------------------------------------------- */}
+  <section class="section">
+    <div class="shell shell--wide about">
+      <div class="about__text" data-reveal>
+        <p class="eyebrow">Kim olduğumuz</p>
+        <h2 class="about__title">
+          İşin özü <span class="foil">söz ile sonucun</span> aynı olması.
+        </h2>
+        <div class="prose">
+          <p>
+            İnşaat, güven gerektiren bir iş. Müşterinin gördüğü şey çoğu zaman
+            bitmiş yüzeydir; oysa yapının ömrünü belirleyen kararlar çok daha
+            önce, görünmeyen katmanlarda verilir.
+          </p>
+          <p>
+            ASAF olarak bu yüzden anlatıya değil kayda güveniyoruz. Kapsamı
+            yazıyoruz, aşamaları fotoğraflıyoruz, malzeme sınıfını önceden
+            belirliyoruz. Böylece teslimde konuşulacak şey beklenti farkı değil,
+            işin kendisi oluyor.
+          </p>
+          <p>
+            Otomotiv tarafı ise bu resmin doğal uzantısı: bir yapının nasıl
+            kullanılacağı, o yapıya nasıl gelinip gidildiğinden bağımsız değil.
+          </p>
+        </div>
+      </div>
+
+      <aside class="about__card" data-reveal style="--reveal-delay:120ms">
+        <h3 class="about__card-title">Künye</h3>
+        <dl class="spec">
+          {identityRows.map((row) => (
+            <div class="spec__row">
+              <dt class="spec__key">{row.key}</dt>
+              <dd class="spec__val">
+                {row.value ?? <em class="about__pending">bilgi bekleniyor</em>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {business.social.instagram && (
+          <a class="link-arrow" href={business.social.instagram} target="_blank" rel="noopener noreferrer">
+            Instagram hesabı <span aria-hidden="true">↗</span>
+          </a>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  <div class="shell shell--wide" data-reveal>
+    <Marquee items={promises} duration="32s" />
+  </div>
+
+  {/* --- Sütunlar ------------------------------------------------------ */}
+  <section class="section">
+    <div class="shell shell--wide">
+      <header class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Duruş</p>
+          <h2 class="section-head__title">Dört <span class="foil">taahhüt</span></h2>
+        </div>
+        <p class="prose">
+          Şirketin nasıl çalıştığını en kısa anlatan dört madde.
+        </p>
+      </header>
+
+      <ul class="card-grid">
+        {pillars.map((pillar, i) => (
+          <li class="card" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <span class="card__index">{pillar.index}</span>
+            <h3 class="card__title">{pillar.title}</h3>
+            <p class="card__text">{pillar.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* --- İş güvenliği + değerler ----------------------------------------- */}
+  <section class="section on-light">
+    <div class="shell shell--wide safety">
+      <Figure
+        src="images/asaf-is-guvenligi-yelekleri.webp"
+        fallback="images/asaf-is-guvenligi-yelekleri.jpg"
+        alt="Üzerinde ASAF logosu bulunan iş güvenliği yelekleri"
+        width={1440}
+        height={1080}
+        title="İş güvenliği ekipmanı"
+        caption="Sahada kullanılan, marka logolu iş güvenliği yelekleri."
+        lightbox
+        ratio="4 / 3"
+        sizes="(min-width: 62rem) 44vw, 92vw"
+        class="safety__media"
+      />
+      <div class="safety__text">
+        <header data-reveal>
+          <p class="eyebrow">Çalışma ilkeleri</p>
+          <h2 class="safety__title">Sahada karşılığı olan ilkeler</h2>
+        </header>
+        <ul class="values">
+          {values.map((value, i) => (
+            <li class="value" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3 class="value__title">{value.title}</h3>
+              <p class="value__text">{value.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* --- Yönlendirme ------------------------------------------------------ */}
+  <section class="section section--tight">
+    <div class="shell shell--wide next">
+      <a class="next__item card" href={url("insaat/")}>
+        <span class="card__index">İnşaat</span>
+        <h3 class="card__title">Yapım hizmetleri</h3>
+        <p class="card__text">Villa, betonarme, cephe, ince iş, tadilat ve şantiye yönetimi.</p>
+        <span class="link-arrow">İncele <span aria-hidden="true">↗</span></span>
+      </a>
+      <a class="next__item card" href={url("otomotiv/")}>
+        <span class="card__index">Otomotiv</span>
+        <h3 class="card__title">Hareket tarafı</h3>
+        <p class="card__text">Araç tedariki, filo düzeni, elektrikli araç geçişi ve şarj altyapısı.</p>
+        <span class="link-arrow">İncele <span aria-hidden="true">↗</span></span>
+      </a>
+      <a class="next__item card" href={url("surec/")}>
+        <span class="card__index">Süreç</span>
+        <h3 class="card__title">Nasıl çalışıyoruz</h3>
+        <p class="card__text">Tanışmadan teslime altı adım ve her adımın somut çıktısı.</p>
+        <span class="link-arrow">İncele <span aria-hidden="true">↗</span></span>
+      </a>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .about { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 62rem) {
+    .about { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--space-3xl); }
+  }
+  .about__text { display: grid; gap: var(--space-m); }
+  .about__title { font-size: var(--step-4); max-inline-size: 18ch; }
+
+  .about__card {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    padding: var(--space-l);
+    border: 1px solid var(--line-gold);
+    border-radius: var(--radius-l);
+    background: color-mix(in oklab, var(--ink-200) 70%, transparent);
+  }
+  .about__card-title {
+    font-family: var(--font-body);
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .about__card .spec { inline-size: 100%; }
+  .about__pending { color: var(--gold-500); font-size: 0.9em; }
+
+  .safety { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 62rem) {
+    .safety { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-3xl); }
+  }
+  .safety :global(.safety__media) { inline-size: 100%; }
+  .safety__text { display: grid; gap: var(--space-l); }
+  .safety__title { font-size: var(--step-3); margin-block-start: var(--space-2xs); }
+
+  .values { display: grid; gap: var(--space-l); }
+  @media (min-width: 40rem) { .values { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .value {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--line-gold);
+  }
+  .value__title { font-size: var(--step-1); }
+  .value__text { color: var(--fg-muted); font-size: var(--step--1); }
+
+  .next { display: grid; gap: var(--space-m); }
+  @media (min-width: 52rem) { .next { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .next__item { gap: var(--space-xs); }
+  .next__item .link-arrow { margin-block-start: auto; padding-block-start: var(--space-s); }
+</style>
